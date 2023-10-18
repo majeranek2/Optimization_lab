@@ -14,7 +14,7 @@ Data ostatniej modyfikacji: 19.09.2023
 //
 //
 //
-// kkk
+// kkkk
 
 #include"opt_alg.h"
 
