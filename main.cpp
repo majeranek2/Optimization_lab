@@ -8,6 +8,14 @@ Akademia Górniczo-Hutnicza
 Data ostatniej modyfikacji: 19.09.2023
 *********************************************/
 
+//sprawdzam czy dzia³a dziekuje za uwage
+//:)
+//hehhehe\
+//
+//
+//
+//
+
 #include"opt_alg.h"
 
 void lab0();
