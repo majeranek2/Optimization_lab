@@ -8,14 +8,6 @@ Akademia Górniczo-Hutnicza
 Data ostatniej modyfikacji: 19.09.2023
 *********************************************/
 
-//sprawdzam czy dzia³a dziekuje za uwage
-//:)
-//hehhehe\
-//
-//
-//
-// kkkk
-
 #include"opt_alg.h"
 
 void lab0();
@@ -55,7 +47,8 @@ void lab0()
 	solution::clear_calls();
 
 	//Wahadlo
-	// wahadlo o dl l i masie m na ppocztaku jest nie ruchome kat wychylenia teta w radianach i na po³ sekundy dodajemy silyu nie przekroczyæ tata_opt wyliczyæ max monemt by nie wychyl sie za bardzo 
+	// wahadlo o dl l i masie m na ppocztaku jest nie ruchome kat wychylenia teta w radianach i na po³ sekundy dodajemy 
+	// sily nie przekroczyæ tata_opt wyliczyæ max monemt by nie wychyl sie za bardzo 
 	//mc^2O(..) +mglsinO+bO(.)-M=0
 	//szukamy x
 	//O(t) i dO(t)/dt
