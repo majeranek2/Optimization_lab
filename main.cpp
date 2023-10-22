@@ -22,7 +22,7 @@ int main()
 {
 	try
 	{
-		lab0();
+		lab1();
 	}
 	catch (string EX_INFO)
 	{
@@ -73,7 +73,28 @@ void lab0()
 
 void lab1()
 {
+	int Nmax = 100;
+	double x0 = 50.;
+	double d = 2;
+	double alpha = 1.5;
+	double* p = new double[2]{ 0,0 };
+	p = expansion(ff1T, x0, d, alpha, Nmax);
+	cout <<"("<< p[0] << ", " << p[1]<< ")" << endl << endl;
 
+	double a = p[0];
+	double b = p[1];
+	double epsilon = 0.001;
+
+	vector<int> fi;
+	fi.push_back(1);
+	fi.push_back(1);
+	for (int i = 2; i < 51; i++) {
+		fi.push_back(fi[i - 2] + fi[i - 1]);
+	}
+
+	solution opt;
+	opt = fib(ff1T, a, b, fi, epsilon);
+	cout << opt.x << endl;
 }
 
 void lab2()

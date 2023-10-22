@@ -35,8 +35,45 @@ double* expansion(matrix(*ff)(matrix, matrix, matrix), double x0, double d, doub
 	try
 	{
 		double* p = new double[2]{ 0,0 };
-		//Tu wpisz kod funkcji
+		int i = 0;
+		vector<double> x;
+		x.push_back(x0);			// x0
+		x.push_back(x[0] + d);	// x1
+		if (ff1T(x[1]) == ff1T(x[0]))
+		{
+			p[0] = x[0];
+			p[1] = x[1];
+			return p;
+		}
+		else if (ff1T(x[1]) > ff1T(x[0]))
+		{
+			d = -d;
+			x[1] = x[0] + d;
+			if (ff1T(x[1]) >= ff1T(x[0]))
+			{
+				p[0] = x[1];
+				p[1] = x[0] - d;
+				return p;
+			}
+		}
 
+		while (ff1T(x[i]) > ff1T(x[i+1]))
+		{
+			if (i > Nmax)
+				exit(1);
+			i++;
+			x.push_back(x[0] + pow(alpha, i) * d);
+		}
+
+		if (d > 0)
+		{
+			p[0] = x[i - 1];
+			p[1] = x[i + 1];
+			return p;
+		}
+
+		p[0] = x[i + 1];
+		p[1] = x[i - 1];
 		return p;
 	}
 	catch (string ex_info)
@@ -45,13 +82,41 @@ double* expansion(matrix(*ff)(matrix, matrix, matrix), double x0, double d, doub
 	}
 }
 
-solution fib(matrix(*ff)(matrix, matrix, matrix), double a, double b, double epsilon, matrix ud1, matrix ud2)
+solution fib(matrix(*ff)(matrix, matrix, matrix), double a, double b, vector<int> fi, double epsilon, matrix ud1, matrix ud2)
 {
 	try
 	{
+		int k = 2;
+		while (fi[k] <= (b - a) / epsilon) {
+			k++;
+		}
+		vector <double> a_, b_, c_, d_;
+		a_.push_back(a);
+		b_.push_back(b);
+		c_.push_back(b_[0] - fi[k - 1] / (fi[k] * (b_[0] - a_[0])));
+		d_.push_back(a_[0] + b_[0] - c_[0]);
+		int i =0;
+		for (i;  i < k - 3; i++) {
+			if (ff1T(c_[i]) < ff1T(d_[i])) {
+				a_.push_back(a_[i]);
+				b_.push_back(d_[i]);
+				//a_[i + 1] = a_[i];
+				//b_[i + 1] = d_[i];
+			}
+			else {
+				//b_[i + 1] = b_[i];
+				b_.push_back(b_[i]);
+				//a_[i + 1] = c_[i];
+				a_.push_back(c_[i]);
+			}
+			c_.push_back(b_[i + 1] - (fi[k - i - 2] / fi[k - i - 1] * (b_[i + 1] - a_[i + 1])));
+			//c_[i + 1] = b_[i + 1] - (fi[k - i - 2] / fi[k - i - 1] * (b_[i + 1] - a_[i + 1]));
+			//d_[i + 1] = a_[i + 1] + b_[i + 1] - c_[i + 1];
+			d_.push_back(a_[i + 1] + b_[i + 1] - c_[i + 1]);
+		}
 		solution Xopt;
-		//Tu wpisz kod funkcji
-
+		//Xopt.x = c_[i + 1];
+		Xopt.x = c_[i];
 		return Xopt;
 	}
 	catch (string ex_info)
