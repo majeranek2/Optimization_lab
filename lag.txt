@@ -50,3 +50,336 @@ solution Xopt;
 				return d[i];
 
 			}
+
+
+// =============================================================
+#include"opt_alg.h"
+
+solution MC(matrix(*ff)(matrix, matrix, matrix), int N, matrix lb, matrix ub, double epsilon, int Nmax, matrix ud1, matrix ud2)
+{
+	try
+	{
+		solution Xopt;
+		while (true)
+		{
+			Xopt = rand_mat(N);
+			for (int i = 0; i < N; ++i)
+				Xopt.x(i) = (ub(i) - lb(i)) * Xopt.x(i) + lb(i);
+			Xopt.fit_fun(ff, ud1, ud2); //wywolanie f. celu nna rzecz rozwiazania fitcals+1
+			if (Xopt.y < epsilon)
+			{
+				Xopt.flag = 1; //dowolne jak chcemy tutaj 1-> dziala mamy rozwiazanie i finish
+				break;
+			}
+			if (solution::f_calls > Nmax)
+			{
+				Xopt.flag = 0;	//-> nie znaleziono za duzo iteacji 
+				break;
+			}
+		}
+		return Xopt;
+	}
+	catch (string ex_info)
+	{
+		throw ("solution MC(...):\n" + ex_info);
+	}
+}
+
+double* expansion(matrix(*ff)(matrix, matrix, matrix), double x0, double d, double alpha, int Nmax, matrix ud1, matrix ud2)
+{
+	try
+	{
+		double* p = new double[2]{ 0,0 };
+		int i = 0;
+		vector<double> x;
+		x.push_back(x0);			// x0
+		x.push_back(x[0] + d);	// x1
+		if (ff1T(x[1]) == ff1T(x[0]))
+		{
+			p[0] = x[0];
+			p[1] = x[1];
+			return p;
+		}
+		else if (ff1T(x[1]) > ff1T(x[0]))
+		{
+			d = -d;
+			x[1] = x[0] + d;
+			if (ff1T(x[1]) >= ff1T(x[0]))
+			{
+				p[0] = x[1];
+				p[1] = x[0] - d;
+				return p;
+			}
+		}
+
+		while (ff1T(x[i]) > ff1T(x[i+1]))
+		{
+			if (i > Nmax)
+				exit(1);
+			i++;
+			x.push_back(x[0] + pow(alpha, i) * d);
+		}
+
+		if (d > 0)
+		{
+			p[0] = x[i - 1];
+			p[1] = x[i + 1];
+			return p;
+		}
+
+		p[0] = x[i + 1];
+		p[1] = x[i - 1];
+		return p;
+	}
+	catch (string ex_info)
+	{
+		throw ("double* expansion(...):\n" + ex_info);
+	}
+}
+
+solution fib(matrix(*ff)(matrix, matrix, matrix), double a, double b, vector<int> fi, double epsilon, matrix ud1, matrix ud2)
+{
+	try
+	{
+		int k = 1;
+		while (fi[k] <= (b - a) / epsilon) {
+			k++;
+		}
+		cout << "Warunek: liczba fib > " << (b - a) / epsilon << endl;
+		cout << k+1 << ". liczba Fibonacciego: " << fi[k] << endl;
+		//vector <double> a_, b_, c_, d_;
+		/*a_.push_back(a);
+		b_.push_back(b);
+		c_.push_back(b_[0] - (fi[k - 1] / fi[k]) * (b_[0] - a_[0]));
+		d_.push_back(a_[0] + b_[0] - c_[0]);*/
+		double* A = new double[k - 2]{};
+		double* B = new double[k - 2]{};
+		double* C = new double[k - 2]{};
+		double* D = new double[k - 2]{};
+		A[0] = a;
+		B[0] = b;
+		C[0] = B[0] - (fi[k - 1] / fi[k]) * (B[0] - A[0]);
+		D[0] = A[0] + B[0] - C[0];
+
+		int i =0;
+		for (i;  i < k - 3; i++) {
+			if (ff1T(C[i]) < ff1T(D[i])) {
+				A[i + 1] = A[i];
+				B[i + 1] = D[i];
+				//a_.push_back(a_[i]);
+				//b_.push_back(d_[i]);
+			}
+			else {
+				B[i + 1] = B[i];
+				A[i + 1] = C[i];
+				//b_.push_back(b_[i]);
+				//a_.push_back(c_[i]);
+			}
+			C[i + 1] = B[i + 1] - (fi[k - i - 2] / fi[k - i - 1]) * (B[i + 1] - A[i + 1]);
+			D[i + 1] = A[i + 1] + B[i + 1] - C[i + 1];
+			//c_.push_back(b_[i + 1] - (fi[k - i - 2] / fi[k - i - 1]) * (b_[i + 1] - a_[i + 1]));
+			//d_.push_back(a_[i + 1] + b_[i + 1] - c_[i + 1]);
+		}
+		solution Xopt;
+		//Xopt.x = c_[i + 1];
+		Xopt.x = C[i + 1];
+		cout << "i = " << i << endl;
+		for (int j = 0; j < i; j++) {
+			cout << "a. " << j << ". " << A[j] << endl;
+			cout << "b. " << j << ". " << B[j] << endl;
+			cout << "c. " << j << ". " << C[j] << endl;
+			cout << "d. " << j << ". " << D[j] << endl;
+			/*cout << "a. " << j << ". " << a_[j] << endl;
+			cout << "b. " << j << ". " << b_[j] << endl;
+			cout << "c. " << j << ". " << c_[j] << endl;
+			cout << "d. " << j << ". " << d_[j] << endl;*/
+		}
+		//cout << c_.size() << endl;
+		Xopt.x = C[i+1];
+		return Xopt;
+	}
+	catch (string ex_info)
+	{
+		throw ("solution fib(...):\n" + ex_info);
+	}
+
+}
+
+solution lag(matrix(*ff)(matrix, matrix, matrix), double a, double b, double epsilon, double gamma, int Nmax, matrix ud1, matrix ud2)
+{
+	try
+	{
+		solution Xopt;
+		//Tu wpisz kod funkcji
+
+		return Xopt;
+	}
+	catch (string ex_info)
+	{
+		throw ("solution lag(...):\n" + ex_info);
+	}
+}
+
+solution HJ(matrix(*ff)(matrix, matrix, matrix), matrix x0, double s, double alpha, double epsilon, int Nmax, matrix ud1, matrix ud2)
+{
+	try
+	{
+		solution Xopt;
+		//Tu wpisz kod funkcji
+
+		return Xopt;
+	}
+	catch (string ex_info)
+	{
+		throw ("solution HJ(...):\n" + ex_info);
+	}
+}
+
+solution HJ_trial(matrix(*ff)(matrix, matrix, matrix), solution XB, double s, matrix ud1, matrix ud2)
+{
+	try
+	{
+		//Tu wpisz kod funkcji
+
+		return XB;
+	}
+	catch (string ex_info)
+	{
+		throw ("solution HJ_trial(...):\n" + ex_info);
+	}
+}
+
+solution Rosen(matrix(*ff)(matrix, matrix, matrix), matrix x0, matrix s0, double alpha, double beta, double epsilon, int Nmax, matrix ud1, matrix ud2)
+{
+	try
+	{
+		solution Xopt;
+		//Tu wpisz kod funkcji
+
+		return Xopt;
+	}
+	catch (string ex_info)
+	{
+		throw ("solution Rosen(...):\n" + ex_info);
+	}
+}
+
+solution pen(matrix(*ff)(matrix, matrix, matrix), matrix x0, double c, double dc, double epsilon, int Nmax, matrix ud1, matrix ud2)
+{
+	try {
+		solution Xopt;
+		//Tu wpisz kod funkcji
+
+		return Xopt;
+	}
+	catch (string ex_info)
+	{
+		throw ("solution pen(...):\n" + ex_info);
+	}
+}
+
+solution sym_NM(matrix(*ff)(matrix, matrix, matrix), matrix x0, double s, double alpha, double beta, double gamma, double delta, double epsilon, int Nmax, matrix ud1, matrix ud2)
+{
+	try
+	{
+		solution Xopt;
+		//Tu wpisz kod funkcji
+
+		return Xopt;
+	}
+	catch (string ex_info)
+	{
+		throw ("solution sym_NM(...):\n" + ex_info);
+	}
+}
+
+solution SD(matrix(*ff)(matrix, matrix, matrix), matrix(*gf)(matrix, matrix, matrix), matrix x0, double h0, double epsilon, int Nmax, matrix ud1, matrix ud2)
+{
+	try
+	{
+		solution Xopt;
+		//Tu wpisz kod funkcji
+
+		return Xopt;
+	}
+	catch (string ex_info)
+	{
+		throw ("solution SD(...):\n" + ex_info);
+	}
+}
+
+solution CG(matrix(*ff)(matrix, matrix, matrix), matrix(*gf)(matrix, matrix, matrix), matrix x0, double h0, double epsilon, int Nmax, matrix ud1, matrix ud2)
+{
+	try
+	{
+		solution Xopt;
+		//Tu wpisz kod funkcji
+
+		return Xopt;
+	}
+	catch (string ex_info)
+	{
+		throw ("solution CG(...):\n" + ex_info);
+	}
+}
+
+solution Newton(matrix(*ff)(matrix, matrix, matrix), matrix(*gf)(matrix, matrix, matrix),
+	matrix(*Hf)(matrix, matrix, matrix), matrix x0, double h0, double epsilon, int Nmax, matrix ud1, matrix ud2)
+{
+	try
+	{
+		solution Xopt;
+		//Tu wpisz kod funkcji
+
+		return Xopt;
+	}
+	catch (string ex_info)
+	{
+		throw ("solution Newton(...):\n" + ex_info);
+	}
+}
+
+solution golden(matrix(*ff)(matrix, matrix, matrix), double a, double b, double epsilon, int Nmax, matrix ud1, matrix ud2)
+{
+	try
+	{
+		solution Xopt;
+		//Tu wpisz kod funkcji
+
+		return Xopt;
+	}
+	catch (string ex_info)
+	{
+		throw ("solution golden(...):\n" + ex_info);
+	}
+}
+
+solution Powell(matrix(*ff)(matrix, matrix, matrix), matrix x0, double epsilon, int Nmax, matrix ud1, matrix ud2)
+{
+	try
+	{
+		solution Xopt;
+		//Tu wpisz kod funkcji
+
+		return Xopt;
+	}
+	catch (string ex_info)
+	{
+		throw ("solution Powell(...):\n" + ex_info);
+	}
+}
+
+solution EA(matrix(*ff)(matrix, matrix, matrix), int N, matrix lb, matrix ub, int mi, int lambda, matrix sigma0, double epsilon, int Nmax, matrix ud1, matrix ud2)
+{
+	try
+	{
+		solution Xopt;
+		//Tu wpisz kod funkcji
+
+		return Xopt;
+	}
+	catch (string ex_info)
+	{
+		throw ("solution EA(...):\n" + ex_info);
+	}
+}
