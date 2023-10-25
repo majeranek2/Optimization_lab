@@ -40,9 +40,13 @@ solution Xopt;
 				return error;
 			}
 			i = i + 1;
-			if (i > Nmax)
-				return error;
+			if (solution::f_calls > Nmax)
+			{
+				Xopt.flag = 0;	//-> nie znaleziono za duzo iteacji 
+				break;
+			}
 			if (b_[i] - a_[i] < epsilon || abs(d_[i] - d_[i - 1]) < y)
-				return d_[i];
+				Xopt.flag = 1; //dowolne jak chcemy tutaj 1-> dziala mamy rozwiazanie i finish
+				return d[i];
 
 			}
