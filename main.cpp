@@ -88,12 +88,17 @@ void lab1()
 	double epsilon = 0.001;
 	double gamma = 0.0001;
 
-	/*vector<int> fi;
+	vector<int> fi;
 	fi.push_back(1);
 	fi.push_back(1);
 	for (int i = 2; i < 51; i++) {
 		fi.push_back(fi[i - 2] + fi[i - 1]);
-	}*/
+	}
+	
+	solution opt1;
+	opt1 = fib(ff1T, a, b, fi, Nmax, epsilon, ud1, ud2);
+	cout << "Optimal point FIB: " << opt1.x << endl;
+	solution::clear_calls();
 
 	solution opt;
 	opt = lag(ff1T, a, b, epsilon, gamma, Nmax, ud1, ud2);

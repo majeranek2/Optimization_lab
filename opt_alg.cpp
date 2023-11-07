@@ -1,4 +1,5 @@
 #include"opt_alg.h"
+double const PHI = 1.61803398;
 
 solution MC(matrix(*ff)(matrix, matrix, matrix), int N, matrix lb, matrix ub, double epsilon, int Nmax, matrix ud1, matrix ud2)
 {
@@ -82,7 +83,7 @@ double* expansion(matrix(*ff)(matrix, matrix, matrix), double x0, double d, doub
 	}
 }
 
-solution fib(matrix(*ff)(matrix, matrix, matrix), double a, double b, vector<int> fi, double epsilon, matrix ud1, matrix ud2)
+solution fib(matrix(*ff)(matrix, matrix, matrix), double a, double b, vector<int> fi, int Nmax, double epsilon, matrix ud1, matrix ud2)
 {
 	try
 	{
@@ -90,33 +91,29 @@ solution fib(matrix(*ff)(matrix, matrix, matrix), double a, double b, vector<int
 		while (fi[k] <= (b - a) / epsilon) {
 			k++;
 		}
+		k++;
+		cout << k;
 		vector <double> a_, b_, c_, d_;
 		a_.push_back(a);
 		b_.push_back(b);
-		c_.push_back(b_[0] - fi[k - 1] / (fi[k] * (b_[0] - a_[0])));
+		c_.push_back(b_[0] - (fi[k - 1] /(fi[k]) * (b_[0] - a_[0])));
 		d_.push_back(a_[0] + b_[0] - c_[0]);
+
 		int i = 0;
-		for (i; i < k - 3; i++) {
+		for (i; i <= k-4; i++) {
 			if (ff1T(c_[i]) < ff1T(d_[i])) {
 				a_.push_back(a_[i]);
 				b_.push_back(d_[i]);
-				//a_[i + 1] = a_[i];
-				//b_[i + 1] = d_[i];
 			}
 			else {
-				//b_[i + 1] = b_[i];
 				b_.push_back(b_[i]);
-				//a_[i + 1] = c_[i];
 				a_.push_back(c_[i]);
 			}
-			c_.push_back(b_[i + 1] - (fi[k - i - 2] / fi[k - i - 1] * (b_[i + 1] - a_[i + 1])));
-			//c_[i + 1] = b_[i + 1] - (fi[k - i - 2] / fi[k - i - 1] * (b_[i + 1] - a_[i + 1]));
-			//d_[i + 1] = a_[i + 1] + b_[i + 1] - c_[i + 1];
+			c_.push_back(b_[i + 1] - (fi[k - i - 2] / fi[k - i - 1]) * (b_[i + 1] - a_[i + 1]));
 			d_.push_back(a_[i + 1] + b_[i + 1] - c_[i + 1]);
 		}
 		solution Xopt;
-		//Xopt.x = c_[i + 1];
-		Xopt.x = c_[i];
+		Xopt.x = c_[k-3];
 		return Xopt;
 	}
 	catch (string ex_info)
@@ -125,6 +122,8 @@ solution fib(matrix(*ff)(matrix, matrix, matrix), double a, double b, vector<int
 	}
 
 }
+
+
 
 
 solution lag(matrix(*ff)(matrix, matrix, matrix), double a, double b, double epsilon, double gamma, int Nmax, matrix ud1, matrix ud2) {
