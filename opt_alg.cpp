@@ -143,8 +143,9 @@ solution lag(matrix(*ff)(matrix, matrix, matrix), double a, double b, double eps
 				ff(matrix({ {c_k} }), ud1, ud2)(0, 0) * (a_k - b_k);
 
 			if (m <= 0) {
-				std::cout << "Nie dzia³a" << std::endl; 
-				return solution(); 
+				// throw "Invalid operation: m is close to zero";
+				std::cout << "Nie dzia³a" << std::endl; // Poprawiona linia wyjœcia
+				return solution(); // Zwrócenie pustego obiektu typu solution
 			}
 
 			double d_k = 0.5 * l / m;
@@ -168,20 +169,20 @@ solution lag(matrix(*ff)(matrix, matrix, matrix), double a, double b, double eps
 				}
 			}
 			else {
-				throw "Error.";
+				throw "Invalid operation: d_k is out of range";
 			}
 
 			i++;
-			solution::f_calls++; 
+			solution::f_calls++; // Inkrementacja liczby wywo³añ funkcji
 
 			if (i > Nmax) {
-				throw "Error.";
+				throw "Exceeded maximum number of function calls.";
 			}
 
 			if (b_k - a_k < epsilon || abs(d_k - 1) < gamma) {
 				solution Xopt;
-				Xopt.x = d_k; 
-				Xopt.y = ff(matrix({ {Xopt.x} }), ud1, ud2)(0, 0);
+				Xopt.x = d_k; // Zak³adaj¹c, ¿e x* = d_k
+				Xopt.y = ff(matrix({ {Xopt.x} }), ud1, ud2)(0, 0); // Obliczenie wartoœci funkcji w optymalnym punkcie
 
 				return Xopt;
 			}
