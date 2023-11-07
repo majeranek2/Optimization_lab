@@ -79,7 +79,7 @@ void lab1()
 	double x0 = 50;
 	double d = 2;
 	double alpha = 1.5;
-	double* p = new double[2] { -100, 100 };
+	double* p = new double[2] { 0,0 };
 	p = expansion(ff1T, x0, d, alpha, Nmax , ud1, ud2);
 	cout << "(" << p[0] << ", " << p[1] << ")" << endl << endl;
 
