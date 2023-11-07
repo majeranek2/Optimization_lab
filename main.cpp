@@ -77,9 +77,9 @@ void lab1()
 	matrix ud1, ud2;
 	int Nmax = 100;
 	double x0 = 52.3;
-	double d = 20;
+	double d = 10;
 	double alpha = 1.5;
-	double* p = new double[2] { 0,0 };
+	double* p = new double[2] { -100,100 };
 	p = expansion(ff1T, x0, d, alpha, Nmax , ud1, ud2);
 	cout << "(" << p[0] << ", " << p[1] << ")" << endl << endl;
 
@@ -91,17 +91,17 @@ void lab1()
 	vector<int> fi;
 	fi.push_back(1);
 	fi.push_back(1);
-	for (int i = 2; i < 51; i++) {
+	for (int i = 2; i < 100; i++) {
 		fi.push_back(fi[i - 2] + fi[i - 1]);
 	}
 	
 	solution opt1;
-	opt1 = fib(ff1T, 57, 74, fi, Nmax, epsilon, ud1, ud2);
+	opt1 = fib(ff1T, a, b, fi, Nmax, epsilon, ud1, ud2);
 	cout << "Optimal point FIB: "  <<opt1.x << endl;
 	solution::clear_calls();
 
 	solution opt2;
-	opt2= lag(ff1T, 0, 100, epsilon, gamma, Nmax, ud1, ud2);
+	opt2= lag(ff1T, a, b, epsilon, gamma, Nmax, ud1, ud2);
 	cout << "Optimal point: "  << opt2.x << endl;
 	solution::clear_calls();
 }

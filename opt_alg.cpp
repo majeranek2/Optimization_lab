@@ -134,71 +134,84 @@ solution fib(matrix(*ff)(matrix, matrix, matrix), double a, double b, vector<int
 }
 
 
-
 solution lag(matrix(*ff)(matrix, matrix, matrix), double a, double b, double epsilon, double gamma, int Nmax, matrix ud1, matrix ud2) {
-	try {
-		ofstream Sout("wyniki_lag.csv");
-		int i = 0;
-		double a_k = a, b_k = b, c_k = a_k + (b_k - a_k) / 3.0;
+		try {
+			std::ofstream Sout("wyniki_lag.csv");
+			int i = 0;
+			std::vector<double> a_k = { a };
+			std::vector<double> b_k = { b };
+			std::vector<double> c_k = { a + (b - a) / 3.0 };
+			double d_k = 0.0;
+			double previous_d_k = 0.0;
 
-		while (true) {
-			double l = ff(matrix(a_k), ud1, ud2)(0, 0) * ((b_k * b_k) - (c_k * c_k)) +
-				ff(matrix(b_k), ud1, ud2)(0, 0) * ((c_k * c_k) - (a_k * a_k)) +
-				ff(matrix(c_k), ud1, ud2)(0, 0) * ((a_k * a_k) - (b_k * b_k));
+			do {
+				double l = ff(matrix(a_k.back()), ud1, ud2)(0, 0) * (b_k.back() * b_k.back() - c_k.back() * c_k.back()) +
+					ff(matrix(b_k.back()), ud1, ud2)(0, 0) * (c_k.back() * c_k.back() - a_k.back() * a_k.back()) +
+					ff(matrix(c_k.back()), ud1, ud2)(0, 0) * (a_k.back() * a_k.back() - b_k.back() * b_k.back());
 
-			double m = ff(matrix(a_k), ud1, ud2)(0, 0) * (b_k - c_k) +
-				ff(matrix(b_k), ud1, ud2)(0, 0) * (c_k - a_k) +
-				ff(matrix(c_k), ud1, ud2)(0, 0) * (a_k - b_k);
+				double m = ff(matrix(a_k.back()), ud1, ud2)(0, 0) * (b_k.back() - c_k.back()) +
+					ff(matrix(b_k.back()), ud1, ud2)(0, 0) * (c_k.back() - a_k.back()) +
+					ff(matrix(c_k.back()), ud1, ud2)(0, 0) * (a_k.back() - b_k.back());
 
-			if (m <= 0) {
-				std::cout << "Nie dzia³a" << std::endl;
-				return solution();
-			}
 
-			double d_k = 0.5 * l / m;
-
-			if (a_k < d_k && d_k < c_k) {
-				if (ff(matrix(d_k), ud1, ud2)(0, 0) < ff(matrix(c_k), ud1, ud2)(0, 0)) {
-					b_k = c_k;
-					c_k = d_k;
+				if (m <= 0) {
+					std::cout << "Nie dzia³a" << std::endl;
+					return solution();
 				}
 				else {
-					a_k = d_k;
-				}
-			}
-			else if (c_k < d_k && d_k < b_k) {
-				if (ff(matrix(d_k), ud1, ud2)(0, 0) < ff(matrix(c_k), ud1, ud2)(0, 0)) {
-					a_k = c_k;
-					c_k = d_k;
-				}
-				else {
-					b_k = d_k;
-				}
-			}
-			else {
-				throw "Invalid operation: d_k is out of range";
-			}
-			Sout <<hcat(i, d_k) << "\n";
-			i++;
-			solution::f_calls++;
+					d_k = 0.5 * l / m;
 
-			if (i > Nmax) {
-				throw "Exceeded maximum number of function calls.";
-			}
+					if (a_k.back() < d_k && d_k < c_k.back()) {
+						if (ff(matrix(d_k), ud1, ud2)(0, 0) < ff(matrix(c_k.back()), ud1, ud2)(0, 0)) {
+							b_k.push_back(c_k.back());
+							c_k.push_back(d_k);
+						}
+						else {
+							a_k.push_back(d_k);
+						}
+					}
+					else if (c_k.back() < d_k && d_k < b_k.back()) {
+						if (ff(matrix(d_k), ud1, ud2)(0, 0) < ff(matrix(c_k.back()), ud1, ud2)(0, 0)) {
+							a_k.push_back(c_k.back());
+							c_k.push_back(d_k);
+						}
+						else {
+							b_k.push_back(d_k);
+						}
+					}
+					else {
+						throw "Invalid operation: d_k is out of range";
+					}
+				}
 
-			if (b_k - a_k < epsilon || abs(d_k - 1) < gamma) {
-				solution Xopt;
-				Xopt.x = d_k;
-				Xopt.y = ff(matrix(Xopt.x), ud1, ud2)(0, 0);
-				return Xopt;
-			}
+				Sout << hcat(i, d_k) << "\n";
+				i++;
+				solution::f_calls++;
+
+				if (i > Nmax) {
+					throw "Exceeded the maximum number of function calls.";
+				}
+
+				previous_d_k = d_k;
+
+			} while (std::abs(b_k.back() - a_k.back()) >= epsilon || std::abs(d_k - previous_d_k) > gamma);
+
+			Sout.close();
+
+			solution Xopt;
+			Xopt.x = d_k;
+			Xopt.y = ff(matrix(Xopt.x), ud1, ud2)(0, 0);
+			return Xopt;
+
 		}
-		Sout.close();
+		catch (const char* ex_info) {
+			throw std::string("solution lag(...):\n") + std::string(ex_info);
+		}
 	}
-	catch (const char* ex_info) {
-		throw "solution lag(...):\n" + std::string(ex_info);
-	}
-}
+
+
+
+
 
 
 solution HJ(matrix(*ff)(matrix, matrix, matrix), matrix x0, double s, double alpha, double epsilon, int Nmax, matrix ud1, matrix ud2)
