@@ -83,42 +83,90 @@ double* expansion(matrix(*ff)(matrix, matrix, matrix), double x0, double d, doub
 	}
 }
 
+//solution fib(matrix(*ff)(matrix, matrix, matrix), double a, double b, vector<int> fi, int Nmax, double epsilon, matrix ud1, matrix ud2)
+//{
+//	try
+//	{
+//		int k = 2;
+//		while (fi[k] <= (b - a) / epsilon) {
+//			k++;
+//		}
+//		k++;
+//		cout << k;
+//		vector <double> a_, b_, c_, d_;
+//		a_.push_back(a);
+//		b_.push_back(b);
+//		c_.push_back(b_[0] - (fi[k - 1] /(fi[k]) * (b_[0] - a_[0])));
+//		d_.push_back(a_[0] + b_[0] - c_[0]);
+//
+//		int i = 0;
+//		for (i; i <= k-4; i++) {
+//			if (ff1T(c_[i]) < ff1T(d_[i])) {
+//				a_.push_back(a_[i]);
+//				b_.push_back(d_[i]);
+//			}
+//			else {
+//				b_.push_back(b_[i]);
+//				a_.push_back(c_[i]);
+//			}
+//			c_.push_back(b_[i + 1] - (fi[k - i - 2] / fi[k - i - 1]) * (b_[i + 1] - a_[i + 1]));
+//			d_.push_back(a_[i + 1] + b_[i + 1] - c_[i + 1]);
+//		}
+//		solution Xopt;
+//		Xopt.x = c_[k-3];
+//		return Xopt;
+//	}
+//	catch (string ex_info)
+//	{
+//		throw ("solution fib(...):\n" + ex_info);
+//	}
+//
+//}
+
 solution fib(matrix(*ff)(matrix, matrix, matrix), double a, double b, vector<int> fi, int Nmax, double epsilon, matrix ud1, matrix ud2)
 {
 	try
 	{
 		int k = 2;
-		while (fi[k] <= (b - a) / epsilon) {
+		while (fi[k] <= static_cast<int>((b - a) / epsilon))
+		{
 			k++;
 		}
-		k++;
-		cout << k;
-		vector <double> a_, b_, c_, d_;
-		a_.push_back(a);
-		b_.push_back(b);
-		c_.push_back(b_[0] - (fi[k - 1] /(fi[k]) * (b_[0] - a_[0])));
-		d_.push_back(a_[0] + b_[0] - c_[0]);
 
-		int i = 0;
-		for (i; i <= k-4; i++) {
-			if (ff1T(c_[i]) < ff1T(d_[i])) {
-				a_.push_back(a_[i]);
-				b_.push_back(d_[i]);
+		std::vector<double> a_(k);
+		std::vector<double> b_(k);
+		std::vector<double> c_(k);
+		std::vector<double> d_(k);
+
+		a_[0] = a;
+		b_[0] = b;
+		c_[0] = b_[0] - (static_cast<double>(fi[k - 1]) / fi[k]) * (b_[0] - a_[0]);
+		d_[0] = a_[0] + b_[0] - c_[0];
+
+		for (int i = 0; i < k - 2; i++)
+		{
+			if (ff1T(c_[i]) < ff1T(d_[i]))
+			{
+				a_[i + 1] = a_[i];
+				b_[i + 1] = d_[i];
 			}
-			else {
-				b_.push_back(b_[i]);
-				a_.push_back(c_[i]);
+			else
+			{
+				b_[i + 1] = b_[i];
+				a_[i + 1] = c_[i];
 			}
-			c_.push_back(b_[i + 1] - (fi[k - i - 2] / fi[k - i - 1]) * (b_[i + 1] - a_[i + 1]));
-			d_.push_back(a_[i + 1] + b_[i + 1] - c_[i + 1]);
+
+			c_[i + 1] = b_[i + 1] - (static_cast<double>(fi[k - i - 2]) / fi[k - i - 1]) * (b_[i + 1] - a_[i + 1]);
+			d_[i + 1] = a_[i + 1] + b_[i + 1] - c_[i + 1];
 		}
+
 		solution Xopt;
-		Xopt.x = c_[k-3];
+		Xopt.x = c_[k - 3];
 		return Xopt;
 	}
-	catch (string ex_info)
+	catch (const std::string& ex_info)
 	{
-		throw ("solution fib(...):\n" + ex_info);
+		throw std::string("solution fib(...):\n" + ex_info);
 	}
 
 }
