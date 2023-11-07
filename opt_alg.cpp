@@ -127,31 +127,29 @@ solution fib(matrix(*ff)(matrix, matrix, matrix), double a, double b, vector<int
 }
 
 
-solution lag(matrix(*ff)(matrix, matrix, matrix), double a, double b, double epsilon, double gamma, int Nmax, matrix ud1, matrix ud2)
-{
+solution lag(matrix(*ff)(matrix, matrix, matrix), double a, double b, double epsilon, double gamma, int Nmax, matrix ud1, matrix ud2) {
 	try {
 		int i = 0;
 		double a_k = a, b_k = b, c_k = a_k + (b_k - a_k) / 3.0;
 
 		while (true) {
-			double l = ff(matrix({ {a_k} }), ud1, ud2)(0, 0) * ((b_k * b_k) - (c_k * c_k)) +
-				ff(matrix({ {b_k} }), ud1, ud2)(0, 0) * ((c_k * c_k) - (a_k * a_k)) +
-				ff(matrix({ {c_k} }), ud1, ud2)(0, 0) * ((a_k * a_k) - (b_k * b_k));
+			double l = ff(matrix(a_k), ud1, ud2)(0, 0) * ((b_k * b_k) - (c_k * c_k)) +
+				ff(matrix(b_k), ud1, ud2)(0, 0) * ((c_k * c_k) - (a_k * a_k)) +
+				ff(matrix(c_k), ud1, ud2)(0, 0) * ((a_k * a_k) - (b_k * b_k));
 
-			double m = ff(matrix({ {a_k} }), ud1, ud2)(0, 0) * (b_k - c_k) +
-				ff(matrix({ {b_k} }), ud1, ud2)(0, 0) * (c_k - a_k) +
-				ff(matrix({ {c_k} }), ud1, ud2)(0, 0) * (a_k - b_k);
+			double m = ff(matrix(a_k), ud1, ud2)(0, 0) * (b_k - c_k) +
+				ff(matrix(b_k), ud1, ud2)(0, 0) * (c_k - a_k) +
+				ff(matrix(c_k), ud1, ud2)(0, 0) * (a_k - b_k);
 
 			if (m <= 0) {
-				// throw "Invalid operation: m is close to zero";
-				std::cout << "Nie dzia³a" << std::endl; // Poprawiona linia wyjœcia
-				return solution(); // Zwrócenie pustego obiektu typu solution
+				std::cout << "Nie dzia³a" << std::endl;
+				return solution();
 			}
 
 			double d_k = 0.5 * l / m;
 
 			if (a_k < d_k && d_k < c_k) {
-				if (ff(matrix({ {d_k} }), ud1, ud2)(0, 0) < ff(matrix({ {c_k} }), ud1, ud2)(0, 0)) {
+				if (ff(matrix(d_k), ud1, ud2)(0, 0) < ff(matrix(c_k), ud1, ud2)(0, 0)) {
 					b_k = c_k;
 					c_k = d_k;
 				}
@@ -160,7 +158,7 @@ solution lag(matrix(*ff)(matrix, matrix, matrix), double a, double b, double eps
 				}
 			}
 			else if (c_k < d_k && d_k < b_k) {
-				if (ff(matrix({ {d_k} }), ud1, ud2)(0, 0) < ff(matrix({ {c_k} }), ud1, ud2)(0, 0)) {
+				if (ff(matrix(d_k), ud1, ud2)(0, 0) < ff(matrix(c_k), ud1, ud2)(0, 0)) {
 					a_k = c_k;
 					c_k = d_k;
 				}
@@ -173,7 +171,7 @@ solution lag(matrix(*ff)(matrix, matrix, matrix), double a, double b, double eps
 			}
 
 			i++;
-			solution::f_calls++; // Inkrementacja liczby wywo³añ funkcji
+			solution::f_calls++;
 
 			if (i > Nmax) {
 				throw "Exceeded maximum number of function calls.";
@@ -181,17 +179,18 @@ solution lag(matrix(*ff)(matrix, matrix, matrix), double a, double b, double eps
 
 			if (b_k - a_k < epsilon || abs(d_k - 1) < gamma) {
 				solution Xopt;
-				Xopt.x = d_k; // Zak³adaj¹c, ¿e x* = d_k
-				Xopt.y = ff(matrix({ {Xopt.x} }), ud1, ud2)(0, 0); // Obliczenie wartoœci funkcji w optymalnym punkcie
+				Xopt.x = d_k;
+				Xopt.y = ff(matrix(Xopt.x), ud1, ud2)(0, 0);
 
 				return Xopt;
 			}
 		}
 	}
-	catch (const char* ex_info) { // Zmiana typu wyj¹tku z std::string na const char*
-		throw "solution lag(...):\n" + std::string(ex_info); // Rzucenie wyj¹tku z informacj¹
+	catch (const char* ex_info) {
+		throw "solution lag(...):\n" + std::string(ex_info);
 	}
 }
+
 
 solution HJ(matrix(*ff)(matrix, matrix, matrix), matrix x0, double s, double alpha, double epsilon, int Nmax, matrix ud1, matrix ud2)
 {
