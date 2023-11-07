@@ -129,6 +129,7 @@ solution fib(matrix(*ff)(matrix, matrix, matrix), double a, double b, vector<int
 
 solution lag(matrix(*ff)(matrix, matrix, matrix), double a, double b, double epsilon, double gamma, int Nmax, matrix ud1, matrix ud2) {
 	try {
+
 		int i = 0;
 		double a_k = a, b_k = b, c_k = a_k + (b_k - a_k) / 3.0;
 
