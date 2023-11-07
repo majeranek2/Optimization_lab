@@ -32,6 +32,12 @@ matrix ff0R(matrix x, matrix ud1, matrix ud2)
 	return y;
 }
 
+matrix ff1T(matrix x, matrix ud1, matrix ud2) 
+{ matrix y; 	
+	y = -cos(0.1 * m2d(x)) * exp(-(0.1 * m2d(x) - 2 * M_PI) * (0.1 * m2d(x) - 2 * M_PI)) + 0.002 * (0.1 * x) * (0.1 * x); 	
+	return y; 
+}
+
 matrix df0(double t, matrix Y, matrix ud1, matrix ud2)
 {
 	matrix dY(2, 1);
