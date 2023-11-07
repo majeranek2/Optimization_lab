@@ -22,7 +22,7 @@ int main()
 {
 	try
 	{
-		lab0();
+		lab1();
 	}
 	catch (string EX_INFO)
 	{
@@ -71,9 +71,34 @@ void lab0()
 	Y[1].~matrix();
 }
 
+
 void lab1()
 {
+	matrix ud1, ud2;
+	int Nmax = 100;
+	double x0 = 50;
+	double d = 2;
+	double alpha = 1.5;
+	double* p = new double[2] { -100, 100 };
+	p = expansion(ff1T, x0, d, alpha, Nmax , ud1, ud2);
+	cout << "(" << p[0] << ", " << p[1] << ")" << endl << endl;
 
+	double a = p[0];
+	double b = p[1];
+	double epsilon = 0.001;
+	double gamma = 0.0001;
+
+	/*vector<int> fi;
+	fi.push_back(1);
+	fi.push_back(1);
+	for (int i = 2; i < 51; i++) {
+		fi.push_back(fi[i - 2] + fi[i - 1]);
+	}*/
+
+	solution opt;
+	opt = lag(ff1T, a, b, epsilon, gamma, Nmax, ud1, ud2);
+	cout << "Optimal point: " << opt.x << endl;
+	solution::clear_calls();
 }
 
 void lab2()
