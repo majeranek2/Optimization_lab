@@ -83,50 +83,11 @@ double* expansion(matrix(*ff)(matrix, matrix, matrix), double x0, double d, doub
 	}
 }
 
-//solution fib(matrix(*ff)(matrix, matrix, matrix), double a, double b, vector<int> fi, int Nmax, double epsilon, matrix ud1, matrix ud2)
-//{
-//	try
-//	{
-//		int k = 2;
-//		while (fi[k] <= (b - a) / epsilon) {
-//			k++;
-//		}
-//		k++;
-//		cout << k;
-//		vector <double> a_, b_, c_, d_;
-//		a_.push_back(a);
-//		b_.push_back(b);
-//		c_.push_back(b_[0] - (fi[k - 1] /(fi[k]) * (b_[0] - a_[0])));
-//		d_.push_back(a_[0] + b_[0] - c_[0]);
-//
-//		int i = 0;
-//		for (i; i <= k-4; i++) {
-//			if (ff1T(c_[i]) < ff1T(d_[i])) {
-//				a_.push_back(a_[i]);
-//				b_.push_back(d_[i]);
-//			}
-//			else {
-//				b_.push_back(b_[i]);
-//				a_.push_back(c_[i]);
-//			}
-//			c_.push_back(b_[i + 1] - (fi[k - i - 2] / fi[k - i - 1]) * (b_[i + 1] - a_[i + 1]));
-//			d_.push_back(a_[i + 1] + b_[i + 1] - c_[i + 1]);
-//		}
-//		solution Xopt;
-//		Xopt.x = c_[k-3];
-//		return Xopt;
-//	}
-//	catch (string ex_info)
-//	{
-//		throw ("solution fib(...):\n" + ex_info);
-//	}
-//
-//}
-
 solution fib(matrix(*ff)(matrix, matrix, matrix), double a, double b, vector<int> fi, int Nmax, double epsilon, matrix ud1, matrix ud2)
 {
 	try
 	{
+		ofstream Sout("wyniki_fib.csv");
 		int k = 2;
 		while (fi[k] <= static_cast<int>((b - a) / epsilon))
 		{
@@ -142,8 +103,8 @@ solution fib(matrix(*ff)(matrix, matrix, matrix), double a, double b, vector<int
 		b_[0] = b;
 		c_[0] = b_[0] - (static_cast<double>(fi[k - 1]) / fi[k]) * (b_[0] - a_[0]);
 		d_[0] = a_[0] + b_[0] - c_[0];
-
-		for (int i = 0; i < k - 2; i++)
+		int i = 0;
+		for (i; i < k - 2; i++)
 		{
 			if (ff1T(c_[i]) < ff1T(d_[i]))
 			{
@@ -158,10 +119,11 @@ solution fib(matrix(*ff)(matrix, matrix, matrix), double a, double b, vector<int
 
 			c_[i + 1] = b_[i + 1] - (static_cast<double>(fi[k - i - 2]) / fi[k - i - 1]) * (b_[i + 1] - a_[i + 1]);
 			d_[i + 1] = a_[i + 1] + b_[i + 1] - c_[i + 1];
+			Sout << hcat(i, c_[i]) << "\n";
 		}
-
+		Sout.close();
 		solution Xopt;
-		Xopt.x = c_[k - 3];
+		Xopt.x = c_[i];
 		return Xopt;
 	}
 	catch (const std::string& ex_info)
@@ -173,10 +135,9 @@ solution fib(matrix(*ff)(matrix, matrix, matrix), double a, double b, vector<int
 
 
 
-
 solution lag(matrix(*ff)(matrix, matrix, matrix), double a, double b, double epsilon, double gamma, int Nmax, matrix ud1, matrix ud2) {
 	try {
-
+		ofstream Sout("wyniki_lag.csv");
 		int i = 0;
 		double a_k = a, b_k = b, c_k = a_k + (b_k - a_k) / 3.0;
 
@@ -217,7 +178,7 @@ solution lag(matrix(*ff)(matrix, matrix, matrix), double a, double b, double eps
 			else {
 				throw "Invalid operation: d_k is out of range";
 			}
-
+			Sout <<hcat(i, d_k) << "\n";
 			i++;
 			solution::f_calls++;
 
@@ -229,10 +190,10 @@ solution lag(matrix(*ff)(matrix, matrix, matrix), double a, double b, double eps
 				solution Xopt;
 				Xopt.x = d_k;
 				Xopt.y = ff(matrix(Xopt.x), ud1, ud2)(0, 0);
-
 				return Xopt;
 			}
 		}
+		Sout.close();
 	}
 	catch (const char* ex_info) {
 		throw "solution lag(...):\n" + std::string(ex_info);
