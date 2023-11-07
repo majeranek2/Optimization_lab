@@ -76,7 +76,7 @@ void lab1()
 {
 	matrix ud1, ud2;
 	int Nmax = 100;
-	double x0 = 50;
+	double x0 = 90;
 	double d = 2;
 	double alpha = 1.5;
 	double* p = new double[2] { 0,0 };
