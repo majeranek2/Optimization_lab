@@ -85,25 +85,42 @@ void lab1()
 
 	double a = p[0];
 	double b = p[1];
-	double epsilon = 0.0001;
-	double gamma = 0.00001;
+	double epsilon = 0.00001;
+	double gamma = 0.00000001;
 
 	vector<int> fi;
 	fi.push_back(1);
 	fi.push_back(1);
-	for (int i = 2; i < 100; i++) {
+	for (int i = 2; i < 50; i++) {
 		fi.push_back(fi[i - 2] + fi[i - 1]);
 	}
 	
-	solution opt1;
-	opt1 = fib(ff1T, a, b, fi, Nmax, epsilon, ud1, ud2);
-	cout << "Optimal point FIB: "  <<opt1.x << endl;
+	solution optT;
+	optT = fib(ff1T, a, b, fi, Nmax, epsilon, ud1, ud2);
+	cout << "Optimal point FIB T: "  <<optT.x << endl;
 	solution::clear_calls();
 
-	solution opt2;
-	opt2= lag(ff1T, a, b, epsilon, gamma, Nmax, ud1, ud2);
-	cout << "Optimal point: "  << opt2.x << endl;
+
+	optT = lag(ff1T, a, b, epsilon, gamma, Nmax, ud1, ud2);
+	cout << "Optimal point Lag T: " << optT.x << endl;
 	solution::clear_calls();
+
+	Nmax = 100;
+	solution optR;
+
+	a = 1;
+	b = 100;
+	//double teta_opt = 1;	//
+	optR = fib(ff1R, a, b, fi, Nmax, epsilon, ud1, ud2);
+	cout << "Optimal point Fib R:"<<optR.x << endl;
+	solution::clear_calls();
+
+;
+	optR= lag(ff1R, a, b, epsilon, gamma, Nmax, ud1, ud2);
+	cout << "Optimal point Lag R: "  << optR.x<< endl;
+	solution::clear_calls();
+
+
 }
 
 void lab2()
