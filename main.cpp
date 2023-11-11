@@ -33,93 +33,64 @@ int main()
 	return 0;
 }
 
-void lab0()
-{
-	//Funkcja testowa
-	double epsilon = 1e-2;				//dok³adnoœæ obliczeñ
-	int Nmax = 10000;					//max liczba iteracji
-	matrix lb(2, 1, -5), ub(2, 1, 5), a(2, 1);	//klasa matrix i wywo³anie konstruktora domyœlny z rozmiarem macierzy, lb-> dolen ograniczenie ub->górne ogranicznie 2 wiersze 1 kolumna wartsoc 5 i punkt a
-	solution opt;	//obiekt w ktorym przechowujemy roziwaznie , przechowuje liczbe wywo³añ funkjci celu i rozwiazanie 
-	a(0) = -1;
-	a(1) = 2;
-	opt = MC(ff0T, 2, lb, ub, epsilon, Nmax, a); //algorytm optymalizacji argumenty: funkcja celu, 2-> l. wymairów, lb- lu-> ograniczenia na losowany punkt  eps-> dok³adnoœc, N-> l. iteracji i a -> punkt 
-	cout << opt << endl << endl;
-	solution::clear_calls();
-
-	//Wahadlo
-	// wahadlo o dl l i masie m na ppocztaku jest nie ruchome kat wychylenia teta w radianach i na po³ sekundy dodajemy 
-	// sily nie przekroczyæ tata_opt wyliczyæ max monemt by nie wychyl sie za bardzo 
-	//mc^2O(..) +mglsinO+bO(.)-M=0
-	//szukamy x
-	//O(t) i dO(t)/dt
-	Nmax = 1000;	
-	epsilon = 1e-2;
-	lb = 0;
-	ub = 5;
-	double teta_opt = 1;	//
-	opt = MC(ff0R, 1, lb, ub, epsilon, Nmax, teta_opt);
-	cout << opt << endl << endl;
-	solution::clear_calls();
-
-	//Zapis symulacji do pliku csv
-	matrix Y0 = matrix(2, 1), MT = matrix(2, new double[2]{ m2d(opt.x),0.5 });
-	matrix* Y = solve_ode(df0, 0, 0.1, 10, Y0, NAN, MT);
-	ofstream Sout("symulacja_lab0.csv");
-	Sout << hcat(Y[0], Y[1]);
-	Sout.close();
-	Y[0].~matrix();
-	Y[1].~matrix();
-}
-
 
 void lab1()
 {
-	matrix ud1, ud2;
+	long double epsilon = 1e-5;
+	long double gamma = 1e-7;
+	long double x0 = 50;
+	long double d = 5.0;
+	long double alpha = 2.0;
+	long double* p = new long double[2]{};
 	int Nmax = 100;
-	double x0 = 52.3;
-	double d = 10;
-	double alpha = 1.5;
-	double* p = new double[2] { -100,100 };
-	p = expansion(ff1T, x0, d, alpha, Nmax , ud1, ud2);
-	cout << "(" << p[0] << ", " << p[1] << ")" << endl << endl;
+	matrix ud1, ud2;
 
-	double a = p[0];
-	double b = p[1];
-	double epsilon = 0.00001;
-	double gamma = 0.00000001;
+	p = expansion(ff1T, x0, d, alpha, Nmax, ud1, ud2);
+	long double a = p[0];
+	long double b = p[1];
 
-	vector<int> fi;
+	cout << "===== FUNKCJA TESTOWA =====\n";
+	cout << "Rzeczywiste minimum funkcji: x = 62.7481, y = -0.9211\n";
+	cout << "===========================\n\n";
+
+	cout << "=== METODA EKSPANSJI ======\n";
+	cout << "Parametry poczatkowe: x0 = " << x0 << ", d = " << d << endl;
+	cout << "Uzyskany przedzial: [" << a << ", " << b << "]\n\n";
+
+
+	cout << "=== METODA FIBONACCIEGO ===\n";
+	vector<long double> fi;
 	fi.push_back(1);
 	fi.push_back(1);
 	for (int i = 2; i < 50; i++) {
 		fi.push_back(fi[i - 2] + fi[i - 1]);
 	}
-	
+
 	solution optT;
-	optT = fib(ff1T, a, b, fi, Nmax, epsilon, ud1, ud2);
-	cout << "Optimal point FIB T: "  <<optT.x << endl;
+	optT = fib(ff1T, a, b, fi, epsilon);
+	cout << optT << endl;
 	solution::clear_calls();
 
 
-	optT = lag(ff1T, a, b, epsilon, gamma, Nmax, ud1, ud2);
-	cout << "Optimal point Lag T: " << optT.x << endl;
+	cout << "=== METODA LAGRANGE'A =====\n";
+	optT = lag(ff1T, a, b, epsilon, gamma, Nmax);
+	if (optT.x != NULL) cout << optT << endl;
 	solution::clear_calls();
 
-	Nmax = 100;
-	solution optR;
-
-	a = 1;
+	cout << "===== PROBLEM RZECZYWISTY =====\n";
+	a = 0;
 	b = 100;
-	//double teta_opt = 1;	//
-	optR = fib(ff1R, a, b, fi, Nmax, epsilon, ud1, ud2);
-	cout << "Optimal point Fib R:"<<optR.x << endl;
+	cout << "===============================\n\n";
+	cout << "=== METODA FIBONACCIEGO =======\n";
+	solution optR;
+	optR = fib(ff1R, a, b, fi, epsilon);
+	cout << optR << endl;
 	solution::clear_calls();
 
-;
-	optR= lag(ff1R, a, b, epsilon, gamma, Nmax, ud1, ud2);
-	cout << "Optimal point Lag R: "  << optR.x<< endl;
+	cout << "=== METODA LAGRANGE'A =====\n";
+	optR = lag(ff1R, a, b, epsilon, gamma, Nmax);
+	cout << optR << endl;
 	solution::clear_calls();
-
 
 }
 

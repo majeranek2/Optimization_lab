@@ -1,5 +1,4 @@
 #include"opt_alg.h"
-double const PHI = 1.61803398;
 
 solution MC(matrix(*ff)(matrix, matrix, matrix), int N, matrix lb, matrix ub, double epsilon, int Nmax, matrix ud1, matrix ud2)
 {
@@ -11,15 +10,15 @@ solution MC(matrix(*ff)(matrix, matrix, matrix), int N, matrix lb, matrix ub, do
 			Xopt = rand_mat(N);
 			for (int i = 0; i < N; ++i)
 				Xopt.x(i) = (ub(i) - lb(i)) * Xopt.x(i) + lb(i);
-			Xopt.fit_fun(ff, ud1, ud2); //wywolanie f. celu nna rzecz rozwiazania fitcals+1
+			Xopt.fit_fun(ff, ud1, ud2);
 			if (Xopt.y < epsilon)
 			{
-				Xopt.flag = 1; //dowolne jak chcemy tutaj 1-> dziala mamy rozwiazanie i finish
+				Xopt.flag = 1;
 				break;
 			}
 			if (solution::f_calls > Nmax)
 			{
-				Xopt.flag = 0;	//-> nie znaleziono za duzo iteacji 
+				Xopt.flag = 0;
 				break;
 			}
 		}
@@ -31,11 +30,11 @@ solution MC(matrix(*ff)(matrix, matrix, matrix), int N, matrix lb, matrix ub, do
 	}
 }
 
-double* expansion(matrix(*ff)(matrix, matrix, matrix), double x0, double d, double alpha, int Nmax, matrix ud1, matrix ud2)
+long double* expansion(matrix(*ff)(matrix, matrix, matrix), long double x0, long double d, long double alpha, int Nmax, matrix ud1, matrix ud2)
 {
 	try
 	{
-		double* p = new double[2] { 0, 0 };
+		long double* p = new long double[2]{ 0, 0 };
 		int i = 0;
 		vector<double> x;
 		x.push_back(x0);			// x0
@@ -61,7 +60,7 @@ double* expansion(matrix(*ff)(matrix, matrix, matrix), double x0, double d, doub
 		while (ff1T(x[i]) > ff1T(x[i + 1]))
 		{
 			if (i > Nmax)
-				exit(1);
+				throw "Iteration number exceeded!\n";
 			i++;
 			x.push_back(x[0] + pow(alpha, i) * d);
 		}
@@ -83,309 +82,254 @@ double* expansion(matrix(*ff)(matrix, matrix, matrix), double x0, double d, doub
 	}
 }
 
-//solution fib(matrix(*ff)(matrix, matrix, matrix), double a, double b, vector<int> fi, int Nmax, double epsilon, matrix ud1, matrix ud2)
-//{
-//	try
-//	{
-//		
-//		ofstream Sout("wyniki_fib.csv");
-//		int k = 2;
-//		while (fi[k] <= static_cast<int>((b - a) / epsilon))
-//		{
-//			k++;
-//		}
-//
-//		std::vector<double> a_(k);
-//		std::vector<double> b_(k);
-//		std::vector<double> c_(k);
-//		std::vector<double> d_(k);
-//
-//		a_[0] = a;
-//		b_[0] = b;
-//		c_[0] = b_[0] - (static_cast<double>(fi[k - 1]) / fi[k]) * (b_[0] - a_[0]);
-//		d_[0] = a_[0] + b_[0] - c_[0];
-//		int i = 0;
-//		for (i; i < k - 2; i++)
-//		{
-//			if (ff1R(c_[i], ud1, ud2) < ff1R(d_[i], ud1, ud2))
-//			{
-//				a_[i + 1] = a_[i];
-//				b_[i + 1] = d_[i];
-//			}
-//			else
-//			{
-//				b_[i + 1] = b_[i];
-//				a_[i + 1] = c_[i];
-//			}
-//
-//			c_[i + 1] = b_[i + 1] - (static_cast<double>(fi[k - i - 2]) / fi[k - i - 1]) * (b_[i + 1] - a_[i + 1]);
-//			d_[i + 1] = a_[i + 1] + b_[i + 1] - c_[i + 1];
-//			Sout << hcat(i, c_[i]) << "\n";
-//			
-//			}
-//		
-//		Sout.close();
-//		solution Xopt;
-//		Xopt.x = c_[i];
-//		
-//
-//		Xopt.y = Xopt.fit_fun(ff, ud1, ud2);
-//		return Xopt;
-//	}
-//	catch (const std::string& ex_info)
-//	{
-//		throw std::string("solution fib(...):\n" + ex_info);
-//	}
-//
-//}
-
-solution fib(matrix(*ff)(matrix, matrix, matrix), double a, double b, vector<int> fi, int Nmax, double epsilon, matrix ud1, matrix ud2) {
+solution fib(matrix(*ff)(matrix, matrix, matrix), long double a, long double b, vector<long double> fi, long double epsilon, matrix ud1, matrix ud2) {
 	try {
 		solution Xopt;
-		ofstream Sout("wyniki_fib.csv");
+		//ofstream Sout("wyniki_fib.csv");
 		int k = 2;
-		while (fi[k] <= static_cast<int>((b - a) / epsilon)) {
+		while (fi[k] <= ((b - a) / epsilon)) {
 			k++;
 		}
 
-		std::vector<double> a_(k);
-		std::vector<double> b_(k);
-		std::vector<double> c_(k);
-		std::vector<double> d_(k);
+		long double c = b - (fi[k - 2] / fi[k - 1]) * (b - a);
+		long double d = a + b - c;
+		for (int i = 0; i < k - 2; i++)
+		{
+			if (ff(c, ud1, ud2) < ff(d, ud1, ud2))
+				b = d;
 
-		a_[0] = a;
-		b_[0] = b;
-		c_[0] = b_[0] - (static_cast<double>(fi[k - 1]) / fi[k]) * (b_[0] - a_[0]);
-		d_[0] = a_[0] + b_[0] - c_[0];
-		int i = 0;
-		solution A(a), B(b), C(c_[0]), D(d_[0]);
+			else
+				a = c;
 
-		for (i; i < k - 2; i++) {
-			A.fit_fun(ff, ud1, ud2);
-			B.fit_fun(ff, ud1, ud2);
-			C.fit_fun(ff, ud1, ud2);
-			D.fit_fun(ff, ud1, ud2);
-
-			if (C.y < D.y) {
-				a_[i + 1] = a_[i];
-				b_[i + 1] = d_[i];
-			}
-			else {
-				b_[i + 1] = b_[i];
-				a_[i + 1] = c_[i];
-			}
-
-			c_[i + 1] = b_[i + 1] - (static_cast<double>(fi[k - i - 2]) / fi[k - i - 1]) * (b_[i + 1] - a_[i + 1]);
-			d_[i + 1] = a_[i + 1] + b_[i + 1] - c_[i + 1];
-			Sout << hcat(i, c_[i]) << "\n";
-
-			A.x = a_[i];
-			B.x = b_[i];
-			C.x = c_[i];
-			D.x = d_[i];
+			c = b - (fi[k - i - 3] / (fi[k - i - 2])) * (b - a);
+			d = a + b - c;
 		}
 
-		Sout.close();
-		Xopt.x = c_[i];
+		Xopt.x = c;
 		Xopt.y = Xopt.fit_fun(ff, ud1, ud2);
+		Xopt.f_calls = k;
 		return Xopt;
 	}
-	catch (const std::string& ex_info) {
-		throw std::string("solution fib(...):\n" + ex_info);
+	catch (string ex_info) {
+		throw ("solution fib(...):\n" + ex_info);
 	}
 }
 
+//solution fib(matrix(*ff)(matrix, matrix, matrix), long double A, long double B, vector<long double> fi, int Nmax, long double epsilon, matrix ud1, matrix ud2) {
+//	try {
+//		solution Xopt;
+//		ofstream Sout("wyniki_fib.csv");
+//		int k = 2;
+//		while (fi[k] <= ((B - A) / epsilon)) {
+//			k++;
+//		}
+//
+//		vector<long double> a(k), b(k), c(k), d(k);
+//
+//		a[0] = A;
+//		b[0] = B;
+//		c[0] = b[0] - ((fi[k - 1]) / fi[k]) * (b[0] - a[0]);
+//		d[0] = a[0] + b[0] - c[0];
+//		int i = 0;
+//		solution A(A), B(B), C(c[0]), D(d[0]);
+//
+//		for (i; i < k - 2; i++) {
+//			A.fit_fun(ff, ud1, ud2);
+//			B.fit_fun(ff, ud1, ud2);
+//			C.fit_fun(ff, ud1, ud2);
+//			D.fit_fun(ff, ud1, ud2);
+//
+//			if (C.y < D.y) {
+//				a[i + 1] = a[i];
+//				b[i + 1] = d[i];
+//			}
+//			else {
+//				b[i + 1] = b[i];
+//				a[i + 1] = c[i];
+//			}
+//
+//			c[i + 1] = b[i + 1] - ((fi[k - i - 2]) / fi[k - i - 1]) * (b[i + 1] - a[i + 1]);
+//			d[i + 1] = a[i + 1] + b[i + 1] - c[i + 1];
+//			Sout << hcat(i, c[i]) << "\n";
+//
+//			A.x = a[i];
+//			B.x = b[i];
+//			C.x = c[i];
+//			D.x = d[i];
+//		}
+//
+//		Sout.close();
+//		Xopt.x = c[i];
+//		Xopt.y = Xopt.fit_fun(ff, ud1, ud2);
+//		return Xopt;
+//	}
+//	catch (const std::string& ex_info) {
+//		throw std::string("solution fib(...):\n" + ex_info);
+//	}
+//}
 
-solution lag(matrix(*ff)(matrix, matrix, matrix), double a, double b, double epsilon, double gamma, int Nmax, matrix ud1, matrix ud2)
-{
+solution lag(matrix(*ff)(matrix, matrix, matrix), long double a, long double b, long double epsilon, long double gamma, int Nmax, matrix ud1, matrix ud2) {
 	try
-	{	
-		ofstream Sout("wyniki_lag.csv");
+	{
 		solution Xopt;
-		Xopt.ud = b - a;
-
-		solution A(a), B(b), C, D, D_old(a);
-		C.x = (a + b) / 2;
-
-		A.fit_fun(ff, ud1, ud2);
-		B.fit_fun(ff, ud1, ud2);
-		C.fit_fun(ff, ud1, ud2);
-
-		double l, m;
 		int i = 0;
-		while (true)
-		{
-			l = m2d(A.y * (pow(B.x) - pow(C.x)) + B.y * (pow(C.x) - pow(A.x)) + C.y * (pow(A.x) - pow(B.x)));
-			m = m2d(A.y * (B.x - C.x) + B.y * (C.x - A.x) + C.y * (A.x - B.x));
 
-			//cout << abs(m2d(B.x)) << " " << abs(m2d(A.x)) << "\n";
-			//cout << abs(m2d(B.x) - m2d(A.x)) << "\n";
+		long double c = a + (b - a) / 3;
+		long double licznik, mianownik;
+		long double d = b - (b - a) / 3;
+		long double f_a, f_b, f_c, f_d;
 
-			if (m <= 0)
-			{
-				Xopt = D_old;
-				Xopt.flag = 2;
-				return Xopt;
+		do {
+			f_a = ff(a, ud1, ud2)(0, 0);
+			f_b = ff(b, ud1, ud2)(0, 0);
+			f_c = ff(c, ud1, ud2)(0, 0);
+
+			licznik = f_a * (pow(b, 2)
+				- pow(c, 2))
+				+ f_b * (pow(c, 2)
+					- pow(a, 2)) + f_c * (pow(a, 2)
+						- pow(b, 2));
+			mianownik = f_a * (b - c)
+				+ f_b * (c - a)
+				+ f_c * (a - b);
+
+			if (mianownik <= 0) {
+				//throw ("Blad - mianownik niedodatni!\n");
+				cout << "Blad - mianownik niedodatni!\n";
+				return NULL;
 			}
 
-			D.x = 0.5 * l / m;
-			D.fit_fun(ff, ud1, ud2);
+			d = 0.5 * (licznik / mianownik);
+			f_d = ff(d, ud1, ud2)(0, 0);
 
-			if (A.x <= D.x && D.x <= C.x)
-			{
-				if (D.y < C.y)
-				{
-					B = C;
-					C = D;
+			if (a < d && d < c) {
+				if (f_d < f_c) {
+					b = c;
+					c = d;
 				}
-				else
-				{
-					A = D;
-				}
-			}
-			else if (C.x <= D.x && D.x <= B.x)
-			{
-				if (D.y < C.y)
-				{
-					A = C;
-					C = D;
-				}
-				else
-				{
-					B = D;
+				else {
+					a = d;
 				}
 			}
-			else
-			{
-				Xopt = D_old;
-				Xopt.flag = 2;
 
-				//cout << abs(m2d(B.x)) << " " << abs(m2d(A.x)) << "\n";
-				//cout << abs(m2d(B.x) - m2d(A.x)) << "\n";
-				//cout << m2d(D.x) << "\n\n\n";
-
-				return Xopt;
+			else {
+				if (c < d && d < b) {
+					if (f_d < f_c) {
+						a = c;
+						c = d;
+					}
+					else {
+						b = d;
+					}
+				}
 			}
-
-			Xopt.ud.add_row((B.x - A.x)());
-
-			if (B.x - A.x < epsilon || abs(D.x() - D_old.x()) < gamma)
-			{
-				Xopt = D;
-				Xopt.flag = 0;
-
-				//cout << abs(m2d(B.x)) << " " << abs(m2d(A.x)) << "\n";
-				//cout << abs(m2d(B.x) - m2d(A.x)) << "\n";
-				//cout << m2d(D.x) << "\n\n\n";
-
-				break;
-			}
-			if (solution::f_calls > Nmax)
-			{
-				Xopt = D;
-				Xopt.flag = 1;
-				break;
-			}
-			
-			D_old = D;
-			Sout << D.x() << "\n";
 			i++;
+			if (i > Nmax)
+				break;
 
-			//cout << abs(m2d(B.x)) << " " << abs(m2d(A.x)) << "\n";
-			//cout << abs(m2d(B.x) - m2d(A.x)) << "\n";
-			//cout << m2d(D.x) << "\n\n\n";
-		}
-		//cout << abs(m2d(B.x)) << " " << abs(m2d(A.x)) << "\n";
-		//cout << abs(m2d(B.x) - m2d(A.x)) << "\n";
-		//cout << m2d(D.x) << "\n\n\n";
-		Sout.close();
+		} while (b - a >= epsilon || abs(f_b - f_a) > gamma);
 
+		Xopt.x = d;
+		Xopt.y = ff(d, ud1, ud2);
+		Xopt.f_calls = i;
 		return Xopt;
 	}
+
 	catch (string ex_info)
 	{
 		throw ("solution lag(...):\n" + ex_info);
 	}
+
 }
-//solution lag(matrix(*ff)(matrix, matrix, matrix), double a, double b, double epsilon, double gamma, int Nmax, matrix ud1, matrix ud2) {
-//		try {
-//			std::ofstream Sout("wyniki_lag.csv");
-//			int i = 0;
-//			std::vector<double> a_k = { a };
-//			std::vector<double> b_k = { b };
-//			std::vector<double> c_k = { a + (b - a) / 3.0 };
-//			double d_k = 0.0;
-//			double previous_d_k = 0.0;
+
+//solution lag(matrix(*ff)(matrix, matrix, matrix), long double A, long double B, long double epsilon, long double gamma, int Nmax, matrix ud1, matrix ud2) {
+//	try
+//	{
+//		solution Xopt;
+//		vector<long double> a(Nmax), b(Nmax), c(Nmax), d(Nmax);
+//		a[0] = A;
+//		b[0] = B;
+//		c[0] = A + (B - A) / 3.0;
+//		long double licznik, mianownik;
+//		int i = 0;
 //
-//			do {
-//				double l = ff(matrix(a_k.back()), ud1, ud2)(0, 0) * (b_k.back() * b_k.back() - c_k.back() * c_k.back()) +
-//					ff(matrix(b_k.back()), ud1, ud2)(0, 0) * (c_k.back() * c_k.back() - a_k.back() * a_k.back()) +
-//					ff(matrix(c_k.back()), ud1, ud2)(0, 0) * (a_k.back() * a_k.back() - b_k.back() * b_k.back());
+//		do {
+//			long double f_a = ff(a[i], ud1, ud2)(0, 0);
+//			long double f_b = ff(b[i], ud1, ud2)(0, 0);
+//			long double f_c = ff(c[i], ud1, ud2)(0, 0);
+//			
+//			licznik = f_a * (pow(b[i], 2))
+//						- pow(c[i], 2) 
+//						+ f_b * pow(c[i], 2)
+//						- pow(a[i], 2) + f_c * (pow(a[i], 2))
+//						- pow(b[i], 2);
+//			mianownik = f_a * (b[i] - c[i])
+//								+ f_b * (c[i] - a[i])
+//								+ f_c * (a[i] - b[i]);
 //
-//				double m = ff(matrix(a_k.back()), ud1, ud2)(0, 0) * (b_k.back() - c_k.back()) +
-//					ff(matrix(b_k.back()), ud1, ud2)(0, 0) * (c_k.back() - a_k.back()) +
-//					ff(matrix(c_k.back()), ud1, ud2)(0, 0) * (a_k.back() - b_k.back());
+//			if (mianownik <= 0) {
+//				//throw ("Blad - mianownik niedodatni!\n");
+//				cout << "Blad - mianownik niedodatni!\n";
+//				return NULL;
+//			}
+//				
+//			d[i] = 0.5 * (licznik / mianownik);
+//			long double f_d = ff(d[i], ud1, ud2)(0, 0);
 //
-//
-//				if (m <= 0) {
-//					std::cout << "Nie dzia³a" << std::endl;
-//					return solution();
+//			if (a[i] < d[i] && d[i] < c[i]) {
+//				if (f_d < f_c) {
+//					a[i + 1] = a[i];
+//					c[i + 1] = d[i];
+//					b[i + 1] = c[i];
 //				}
 //				else {
-//					d_k = 0.5 * l / m;
+//					a[i + 1] = d[i];
+//					c[i + 1] = c[i];
+//					b[i + 1] = b[i];
+//				}
+//			}
 //
-//					if (a_k.back() < d_k && d_k < c_k.back()) {
-//						if (ff(matrix(d_k), ud1, ud2)(0, 0) < ff(matrix(c_k.back()), ud1, ud2)(0, 0)) {
-//							b_k.push_back(c_k.back());
-//							c_k.push_back(d_k);
-//						}
-//						else {
-//							a_k.push_back(d_k);
-//						}
-//					}
-//					else if (c_k.back() < d_k && d_k < b_k.back()) {
-//						if (ff(matrix(d_k), ud1, ud2)(0, 0) < ff(matrix(c_k.back()), ud1, ud2)(0, 0)) {
-//							a_k.push_back(c_k.back());
-//							c_k.push_back(d_k);
-//						}
-//						else {
-//							b_k.push_back(d_k);
-//						}
+//			else {
+//				if (c[i] < d[i] && d[i] < b[i]) {
+//					if (f_d < f_c) {
+//						a[i + 1] = c[i];
+//						c[i + 1] = d[i];
+//						b[i + 1] = b[i];
 //					}
 //					else {
-//						throw "Invalid operation: d_k is out of range";
+//						a[i + 1] = a[i];
+//						c[i + 1] = c[i];
+//						b[i + 1] = d[i];
 //					}
 //				}
+//				/*else {
+//					cout << "Blad - algorytm nie jest zbiezny!\n";
+//					return NULL;
+//				}*/
+//					//throw ("Blad - algorytm nie jest zbiezny!\n");
+//					//break;
+//			}
+//			cout << i << endl;
+//			i++;
 //
-//				Sout << hcat(i, d_k) << "\n";
-//				i++;
-//				solution::f_calls++;
+//			/*if (i > Nmax) {
+//				cout << "Blad - nie udalo sie osiagnac doklanosci epsilon\n";
+//				return NULL;
+//			}*/
+//				//throw ("Blad - nie udalo sie osiagnac doklanosci epsilon\n");
+//				//break;
+//		} while (b[i] - a[i] >= epsilon || abs(d[i] - d[i - 1]) > gamma);
 //
-//				if (i > Nmax) {
-//					throw "Exceeded the maximum number of function calls.";
-//				}
-//
-//				previous_d_k = d_k;
-//
-//			} while (std::abs(b_k.back() - a_k.back()) >= epsilon || std::abs(d_k - previous_d_k) > gamma);
-//
-//			Sout.close();
-//
-//			solution Xopt;
-//			Xopt.x = d_k;
-//			Xopt.y = ff(matrix(Xopt.x), ud1, ud2)(0, 0);
-//			return Xopt;
-//
-//		}
-//		catch (const char* ex_info) {
-//			throw std::string("solution lag(...):\n") + std::string(ex_info);
-//		}
+//		Xopt.x = d[i];
+//		return Xopt;
 //	}
-
-
-
-
-
+//
+//	catch (string ex_info)
+//	{
+//		throw ("solution lag(...):\n" + ex_info);
+//	}
+//
+//}
 
 solution HJ(matrix(*ff)(matrix, matrix, matrix), matrix x0, double s, double alpha, double epsilon, int Nmax, matrix ud1, matrix ud2)
 {
