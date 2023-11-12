@@ -45,8 +45,14 @@ matrix ff1T(matrix x, matrix ud1, matrix ud2)
 matrix ff1R(matrix x, matrix ud1, matrix ud2)
 {
 	matrix y;
-	matrix Y0 = matrix(3, new double[3]{ 5, 1, 10 });
-	matrix* Y = solve_ode(df1, 0, 1, 1000, Y0, ud1, x);
+	double Va = 5;
+	double Vb = 1;
+	double Tb = 10;
+	matrix Y0 = matrix(3, new double[3]{ Va, Vb, Tb });
+	double tend = 1000;
+	double t0 = 0;
+	double dt = 1;
+	matrix* Y = solve_ode(df1, t0, dt, tend, Y0, ud1, x);
 	int n = get_len(Y[0]);
 	double max = Y[1](0, 2);
 	for (int i = 1; i < n; ++i)
@@ -59,24 +65,19 @@ matrix ff1R(matrix x, matrix ud1, matrix ud2)
 
 matrix df1(double t, matrix Y, matrix ud1, matrix ud2) {
 	matrix dY(3, 1);
-	// Stałe i właściwości
 	double g = 9.81;
 	double b = 0.63;
 	double a = 0.98;
-	double P_A = 0.7;  // Pole przekroju zbiornika A w mm²
-	double P_B = 1;  // Pole przekroju zbiornika B w mm²
-	double D_B = 0.000365665;  // Pole przekroju wylotu zbiornika B w mm²
+	double P_A = 0.7; 
+	double P_B = 1; 
+	double D_B = 0.000365665;  
+	double Fin = 0.01;
+	double Ta = 90;
+	double tin = 10;
 
-	// Obliczenie strumieni wypływu
-	double F_out_A = Y(0, 0) > 0 ? a * b * m2d(ud2) * sqrt(2.0 * g * Y(0, 0) / P_A) : 0.0;
-	double F_out_B = Y(1, 0) > 0 ? a * b * D_B * sqrt(2.0 * g * Y(1, 0) / P_B) : 0.0;
+	double F_out_A = Y(0, 0) > 0 ? -a * b * m2d(ud2) * sqrt(2.0 * g * Y(0, 0) / P_A) : 0.0;
+	double F_out_B = Y(1, 0) > 0 ? - a * b * D_B * sqrt(2.0 * g * Y(1, 0) / P_B) : 0.0;
 
-	// Dodatkowe wartości (do zastąpienia rzeczywistymi danymi)
-	double Fin = 0.01;  // Przepływ do zbiornika B w mm³/s
-	double Ta = 90;   // Temperatura napływającej wody w stopniach Celsiusza
-	double tin = 10;  // Wartość czasowa w sekundach
-
-	// Równania różniczkowe
 	dY(0, 0) = F_out_A;
 	dY(1, 0) = -F_out_A + F_out_B + Fin;
 	dY(2, 0) = (Fin / Y(1, 0)) * (tin - Y(2, 0)) - (F_out_A / Y(1, 0)) * (Ta - Y(2, 0));
