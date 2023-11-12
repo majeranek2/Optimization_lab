@@ -162,6 +162,17 @@ void lab1()
 	y[0].~matrix();
 	y[1].~matrix();
 
+	// SYMULACJA - LAGRANGE
+	ofstream LAG("symulacja_lagrange.csv");
+	x = matrix(optRlag.x);
+	y = solve_ode(df1, 0, 1, 1000, y0, ud1, x);
+	max = y[1](0, 2);
+	for (int t = 0; t < 1000; t++)
+	{
+		LAG << hcat(t, y[1](t, 0)) << hcat(y[1](t, 1), y[1](t, 2)) << "\n";
+	}
+	LAG.close();
+	solution::clear_calls();
 }
 
 void lab2()
