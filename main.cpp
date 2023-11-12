@@ -44,11 +44,12 @@ void lab1()
 	 double alpha = 1.6;
 	 //srand(time(NULL));
 	 solution optT;
-	 solution optR;
+	 solution optRfib;
+	 solution optRlag;
 	 solution optE;
 	 double* p = new  double[2]{};
 	 double pom;
-	 int Nmax = 100;
+	 int Nmax = 1000;
 	 double a, b;
 	 matrix ud1, ud2;
 
@@ -115,21 +116,43 @@ void lab1()
 		Sout << "\n\n";
 	}Sout.close();
 
-	/*cout << "===== PROBLEM RZECZYWISTY =====\n";
-	a = 0;
-	b = 100;
+	cout << "===== PROBLEM RZECZYWISTY =====\n";
+	a = 1e-4;
+	b = 1e-1;
 	cout << "===============================\n\n";
 	cout << "=== METODA FIBONACCIEGO =======\n";
-	solution optR;
-	optR = fib(ff1R, a, b, fi, epsilon);
-	cout << optR << endl;
+	optRfib = fib(ff1R, a, b, fi, epsilon);
+	cout << optRfib << endl;
 	solution::clear_calls();
 
 	cout << "=== METODA LAGRANGE'A =====\n";
-	optR = lag(ff1R, a, b, epsilon, gamma, Nmax);
-	cout << optR << endl;
-	solution::clear_calls();*/
+	optRlag = lag(ff1R, a, b, epsilon, gamma, Nmax);
+	cout << optRlag << endl;
+	solution::clear_calls();
 
+	// SYMULACJA - FIBONACCI
+	ofstream FIB("symulacja_fibonacci.csv");
+	matrix x(optRfib.x);
+	matrix y0 = matrix(3, new double[3]{ 5, 1, 10 });
+	matrix* y = solve_ode(df1, 0, 1, 1000, y0, ud1, x);
+	double max = y[1](0, 2);
+	for (int t = 0; t < 1000; t++)
+	{
+		FIB << hcat(t, y[1](t, 0)) << hcat(y[1](t, 1), y[1](t, 2)) << "\n";
+	}
+	FIB.close();
+
+	// SYMULACJA - LAGRANGE
+	ofstream LAG("symulacja_lagrange.csv");
+	x = matrix(optRlag.x);
+	y = solve_ode(df1, 0, 1, 1000, y0, ud1, x);
+	max = y[1](0, 2);
+	for (int t = 0; t < 1000; t++)
+	{
+		LAG << hcat(t, y[1](t, 0)) << hcat(y[1](t, 1), y[1](t, 2)) << "\n";
+	}
+	LAG.close();
+	solution::clear_calls();
 }
 
 void lab2()
