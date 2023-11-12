@@ -59,6 +59,8 @@ matrix ff1R(matrix x, matrix ud1, matrix ud2)
 		if (max < Y[1](i, 2))
 			max = Y[1](i, 2);
 	y = abs(max - 50);
+	Y[0].~matrix();
+	Y[1].~matrix();
 	return y;
 }
 
