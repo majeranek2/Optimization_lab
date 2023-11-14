@@ -210,8 +210,40 @@ solution HJ(matrix(*ff)(matrix, matrix, matrix), matrix x0, double s, double alp
 	try
 	{
 		solution Xopt;
-		//Tu wpisz kod funkcji
+		matrix x = x0;
+		matrix xB = x0;
+		matrix xB_;
+		int i = 0;
 
+		while (s >= epsilon)
+		{
+			xB = x;
+			x = HJ_trial(ff, xB, s, ud1, ud2);
+
+			if (ff(x, ud1, ud2)(0, 0) < ff(xB, ud1, ud2)(0, 0))
+			{
+				while (ff(x, ud1, ud2)(0, 0) < ff(xB, ud1, ud2)(0, 0))
+				{
+					xB_ = xB;
+					xB = x;
+					x = 2 * xB - xB_;
+					x = HJ_trial(ff, xB, s, ud1, ud2);
+					i++;
+					if (i > Nmax)
+						break;
+				}
+				x = xB;
+			}
+			else
+				s = alpha * s;
+
+			if (i > Nmax)
+				break;
+		}
+
+		Xopt.x = xB;
+		Xopt.y = ff(Xopt.x, ud1, ud2)(0, 0);
+		Xopt.f_calls = i;
 		return Xopt;
 	}
 	catch (string ex_info)
@@ -220,13 +252,30 @@ solution HJ(matrix(*ff)(matrix, matrix, matrix), matrix x0, double s, double alp
 	}
 }
 
-solution HJ_trial(matrix(*ff)(matrix, matrix, matrix), solution XB, double s, matrix ud1, matrix ud2)
+matrix  HJ_trial(matrix(*ff)(matrix, matrix, matrix), solution XB, double s, matrix ud1, matrix ud2)
 {
 	try
 	{
-		//Tu wpisz kod funkcji
+		matrix x = XB.x;
+		matrix x_plus, x_minus;
 
-		return XB;
+		for (int j = 0; j < get_size(x)[0]; j++)
+		{
+			x_plus = x;
+			x_plus(j, 0) += s;
+			x_minus = x;
+			x_minus(j, 0) -= s;
+
+			if (ff(x_plus, ud1, ud2)(0, 0) < ff(x, ud1, ud2)(0, 0))
+				x = x_plus;
+			else
+			{
+				if (ff(x_minus, ud1, ud2)(0, 0) < ff(x, ud1, ud2)(0, 0))
+					x = x_minus;
+			}
+		}
+
+		return x;
 	}
 	catch (string ex_info)
 	{

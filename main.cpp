@@ -22,7 +22,7 @@ int main()
 {
 	try
 	{
-		lab1();
+		lab2();
 	}
 	catch (string EX_INFO)
 	{
@@ -33,7 +33,7 @@ int main()
 	return 0;
 }
 
-
+/*
 void lab1()
 {	
 	ofstream Sout("wyniki.csv");
@@ -174,10 +174,33 @@ void lab1()
 	LAG.close();
 	solution::clear_calls();
 }
+*/
+
 
 void lab2()
 {
+	matrix ud1, ud2;
+	solution optT;
+	double epsilon = 0.01;
+	double alpha = 0.5;
+	int Nmax = 100;
+	matrix x0(2,1);
+	x0(0, 0) = 0.5;  // Wartoœæ pocz¹tkowa dla x1
+	x0(1, 0) = 0.5;
+	double s = 0.5;
+	optT = HJ(ff2T, x0, s, alpha, epsilon,Nmax,ud1,ud2);
+	cout << optT << endl;
+	solution::clear_calls();
 
+	//z wykladu
+	x0(0, 0) = -0.5;  // Wartoœæ pocz¹tkowa dla x1
+	x0(1, 0) = 1;
+	s = 0.5;
+	epsilon = 0.01;
+	alpha = 0.5;
+	optT = HJ(ff2T_2, x0, s, alpha, epsilon, Nmax, ud1, ud2);
+	cout << optT << endl;
+	solution::clear_calls();
 }
 
 void lab3()

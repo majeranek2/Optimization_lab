@@ -87,29 +87,15 @@ matrix df1(double t, matrix Y, matrix ud1, matrix ud2) {
 	return dY;
 }
 
-//matrix df1(double t, matrix Y, matrix ud1, matrix ud2) {
-//	matrix dY(3, 1);
-//	// Stałe i właściwości
-//	double g = 9.81;
-//	double b = 0.63;
-//	double a = 0.98;
-//	double P_A = 700000;  // Pole przekroju zbiornika A w mm²
-//	double P_B = 1000000;  // Pole przekroju zbiornika B w mm²
-//	double D_B = 36566.5;  // Pole przekroju wylotu zbiornika B w mm²
-//
-//	// Obliczenie strumieni wypływu
-//	double F_out_A = Y(0, 0) > 0 ? -a * b * m2d(ud2) * sqrt(2.0 * g * Y(0, 0) / P_A) : 0.0;
-//	double F_out_B = Y(1, 0) > 0 ? -a * b * D_B * sqrt(2.0 * g * Y(1, 0) / P_B) : 0.0;
-//
-//	// Dodatkowe wartości (do zastąpienia rzeczywistymi danymi)
-//	double Fin = 10;  // Przepływ do zbiornika B w mm³/s
-//	double Ta = 90;   // Temperatura napływającej wody w stopniach Celsiusza
-//	double tin = 10;  // Wartość czasowa w sekundach
-//
-//	// Równania różniczkowe
-//	dY(0, 0) =  F_out_A;
-//	dY(1, 0) = -F_out_A + F_out_B + Fin;
-//	dY(2, 0) = (Fin / Y(1, 0)) * (tin - Y(2, 0)) + (F_out_A / Y(1, 0)) * (Ta - Y(2, 0));
-//
-//	return dY;
-//}
+matrix ff2T(matrix x, matrix ud1, matrix ud2)
+{
+	matrix y;
+	y = x(0) * x(0) + x(1) * x(1) - cos(2.5 * M_PI * x(0)) - cos(2.5 * M_PI * x(1)) + 2;
+	return y;
+}
+
+matrix ff2T_2(matrix x, matrix ud1, matrix ud2) {
+	matrix y;
+	y = 2.5 * pow((x(0) * x(0) - x(1)), 2)+pow((1-x(0)),2);
+	return y;
+}
