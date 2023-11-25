@@ -201,6 +201,9 @@ void lab2()
 	optT = HJ(ff2T_2, x0, s, alpha, epsilon, Nmax, ud1, ud2);
 	cout << optT << endl;
 	solution::clear_calls();
+
+	alpha = 1.5;
+	double beta = 0.5;
 }
 
 void lab3()
