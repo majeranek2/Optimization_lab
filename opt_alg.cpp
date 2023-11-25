@@ -289,7 +289,58 @@ solution Rosen(matrix(*ff)(matrix, matrix, matrix), matrix x0, matrix s0, double
 	{
 		solution Xopt;
 		//Tu wpisz kod funkcji
+		matrix x_b = x0;
+		matrix sj = s0;
 
+		int n = get_len(x0);
+		matrix lambda(n, 0.0);
+		matrix p(n, 0.0);
+		matrix d(n, 0.0);
+		int i = 0;
+		bool przerwa = true;
+
+		do {
+			for (int j = 0; j < n; j++) {
+				x_b = x0[i];
+				matrix x_p = x_b;
+				x_p[j] = x_p[j] + sj[j] * d[j];
+				if (ff(x_p, ud1, ud2) < ff(x_b, ud1, ud2)) {
+					x_b = x_p;
+					lambda[j] = lambda[j] + sj[j];
+					sj[j] = sj[j] * alpha;
+				}
+				else {
+					sj[j] = sj[j] * (-beta);
+					p[j] = p[j] + 1;
+				}
+			}
+			i++;
+
+			bool zmiana_bazy = true;
+			for (int j = 0; j < n; j++) {
+				if (lambda[j] == 0.0 || p[j] == 0.0) {
+					zmiana_bazy = false;
+					break;
+				}
+			}
+
+			if (zmiana_bazy) {
+				//tu brakuje 
+			}
+
+			if (i > Nmax) {
+				przerwa = false;
+			}
+			for (int j = 0; j < n; j++) {
+				double a = sj(j);
+				if (abs(a) > epsilon) {
+					przerwa = false;
+				}
+			}
+
+		} while (przerwa = true);
+
+		Xopt = x_b;
 		return Xopt;
 	}
 	catch (string ex_info)
