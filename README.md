@@ -1,6 +1,6 @@
 # Optymalizacja_lab
-Sprawozdanie:
-https://aghedupl-my.sharepoint.com/:w:/g/personal/pawinska_student_agh_edu_pl/EUOUpvdyD0lDtlc9eS0vvqoBmTz0mMja4GqCCBLX56xw3A?e=xqubJ2
+Sprawozdanie lab 2:
+[https://aghedupl-my.sharepoint.com/:w:/g/personal/pawinska_student_agh_edu_pl/EUOUpvdyD0lDtlc9eS0vvqoBmTz0mMja4GqCCBLX56xw3A?e=xqubJ2](https://aghedupl-my.sharepoint.com/:w:/g/personal/pawinska_student_agh_edu_pl/Ed0YmHMnY1VJkq3HAJoUPJkBbsQhd8lRynAbp8p-Bor-Dg?e=PMGSIj)
 
 funkcje piszemy w pliku opt_alg.cpp
 wywołujwemy je w main lab_1
