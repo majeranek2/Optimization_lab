@@ -179,20 +179,23 @@ void lab1()
 
 void lab2()
 {
+	srand(time(NULL));
 	matrix ud1, ud2;
 	solution optT;
 	double epsilon = 0.01;
 	double alpha = 0.5;
 	int Nmax = 100;
-	matrix x0(2,1);
+	matrix x0(2, 1);
+	matrix x(2, 1);
 	x0(0, 0) = 0.5;  // Wartoœæ pocz¹tkowa dla x1
 	x0(1, 0) = 0.5;
 	double s = 0.5;
-	optT = HJ(ff2T, x0, s, alpha, epsilon,Nmax,ud1,ud2);
-	cout << optT << endl;
-	solution::clear_calls();
+	//optT = HJ(ff2T, x0, s, alpha, epsilon,Nmax,ud1,ud2);
+	//cout << optT << endl;
+	//solution::clear_calls();
 
-	//z wykladu
+	//z wykladu dla sprawdzenia:---------------------------------------------
+	/*
 	x0(0, 0) = -0.5;  // Wartoœæ pocz¹tkowa dla x1
 	x0(1, 0) = 1;
 	s = 0.5;
@@ -201,6 +204,46 @@ void lab2()
 	optT = HJ(ff2T_2, x0, s, alpha, epsilon, Nmax, ud1, ud2);
 	cout << optT << endl;
 	solution::clear_calls();
+	*/
+
+	//Funkcja testowa celu zadanie:
+	ofstream Sout("wyniki_lab_2.csv");
+	for (double krok = 0.4; krok < 1.5; krok += 0.5) {
+		for (int i = 0; i < 100; i++) {
+			x0(0, 0) = rand() % 10;
+			x0(1, 0) = rand() % 10;
+			optT = HJ(ff2T, x0, krok, alpha, epsilon, Nmax, ud1, ud2);
+			x = optT.x;
+			Sout << hcat(x0(0, 0), x0(1, 0));
+			Sout << hcat(x(0, 0), x(1, 0));
+			Sout << optT.f_calls << "\n";
+			//Zamieniæ wy¿sza linija na to przy dodaniu rosenbroka, bo /n rozpierdzieli 
+			// b³edy bedzue calls dwa razy wypisany jak ostatnio
+			//Sout << hcat(optT.f_calls, optT.f_calls);
+			solution::clear_calls();
+
+
+			//algorytm Rosenbroka
+			/*optT = Rosen(ff2T, x0, krok, alpha, epsilon, Nmax, ud1, ud2);
+			x = optT.x;
+			Sout << hcat(x0(0, 0), x0(1, 0));
+			Sout << hcat(x(0, 0), x(1, 0));
+			Sout << optT.f_calls << "\n";
+			solution::clear_calls();*/
+
+		}
+		Sout << "\n\n";
+	}
+	Sout.close();
+
+	//Problem rzeczywtsty:------------------------------------
+	x0(0, 0) = 5;
+	x0(1, 0) = 5;
+	s = 1;
+
+	//optT = HJ(ff2R, x0, s, alpha, epsilon, Nmax, ud1, ud2);
+	//cout << optT << endl;
+	//solution::clear_calls();
 }
 
 void lab3()

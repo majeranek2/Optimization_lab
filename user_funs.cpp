@@ -99,3 +99,34 @@ matrix ff2T_2(matrix x, matrix ud1, matrix ud2) {
 	y = 2.5 * pow((x(0) * x(0) - x(1)), 2)+pow((1-x(0)),2);
 	return y;
 }
+matrix ff2R(matrix x, matrix ud1, matrix ud2) {
+	matrix Y0 = matrix(2, 1);
+	matrix Y_ref(2, new double[2] {3.14, 0});
+	matrix y;
+	double tend = 100;
+	double t0 = 0;
+	double dt = 0.1;
+	matrix* Y = solve_ode(df2, t0, dt, tend, Y0, Y_ref, x);
+	int n = get_len(Y[0]);
+	for (int i = 0; i < n; i++) {
+		y = y + 10 * pow(Y_ref(0) - Y[1](i, 0), 2) + pow(Y_ref(1) - Y[1](i, 1), 2) + pow(x(0) * (Y_ref(0) - Y[1](i, 0)) + x(1) * (Y_ref(1) - Y[1](i, 1)), 2);
+	}
+	y = y * dt;
+	return y;
+}
+
+matrix df2(double t, matrix Y, matrix ud1, matrix ud2) {
+	matrix dY(2, 1);
+	double l = 0.6;
+	double mr = 1;
+	double mc = 9.5;
+	double b = 0.5;
+	double I;
+	I = 1 / 3 * mr * l * l + mc * l * l;
+	//dY[0,0] = Y(1);
+	//dY[1,0] = ((ud2(0) * (ud1(0) - Y(0)) + ud2(1) * (ud1(1) - Y(1)) - b * Y(1))) / I;
+	dY(0, 0) = Y(1, 0);
+	dY(1, 0) = ((ud2(0) * (ud1(0) - Y(0, 0)) + ud2(1) * (ud1(1) - Y(1, 0)) - b * Y(1, 0))) / I;
+
+	return dY;
+}
