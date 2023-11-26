@@ -236,13 +236,20 @@ void lab2()
 	}
 	Sout.close();
 
+
+	matrix X0(2, 2);
+	X0(0, 0) = rand();
+	X0(0, 1) = rand();
+	X0(1, 0) = rand();
+	X0(1, 1) = rand();
 	alpha = 3.0;
 	double beta = 0.5;
-	int n = get_len(x0);
+	int n = get_len(X0[0]);
 	matrix S(n, n, 1.0);
-	x0(0, 0) = rand() % 10;
-	x0(1, 0) = rand() % 10;
-	optT = Rosen(ff2T, x0, S, alpha, beta, epsilon, Nmax);
+	cout << "Punkty poczatkowe:\n";
+	cout << "x0: " << endl << x0 << endl;	// czy ten punkt dzia³a poprawnie?
+
+	optT = Rosen(ff2T, X0, S, alpha, beta, epsilon, Nmax);
 	cout << optT << endl;
 	solution::clear_calls();
 
