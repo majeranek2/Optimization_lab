@@ -288,29 +288,37 @@ solution Rosen(matrix(*ff)(matrix, matrix, matrix), matrix x0, matrix s0, double
 	try
 	{
 		solution Xopt;
-		//Tu wpisz kod funkcji
 		matrix x_b = x0;
-		matrix sj = s0;
+		matrix s = s0;
 
 		int n = get_len(x0);
-		matrix lambda(n, 0.0);
-		matrix p(n, 0.0);
-		matrix d(n, 0.0);
+		double* ZERO = new double[n] {};
+
+		matrix lambda(n, ZERO);
+		matrix p(n, ZERO);
+		matrix d = getBase(n);
+
 		int i = 0;
 		bool przerwa = true;
 
 		do {
 			for (int j = 0; j < n; j++) {
-				x_b = x0[i];
-				matrix x_p = x_b;
-				x_p[j] = x_p[j] + sj[j] * d[j];
-				if (ff(x_p, ud1, ud2) < ff(x_b, ud1, ud2)) {
-					x_b = x_p;
-					lambda[j] = lambda[j] + sj[j];
-					sj[j] = sj[j] * alpha;
+				//x_b = x0[i];
+				// === DEBUG
+				cout << "x_b:\n" << x_b << endl;
+				cout << "s[j]:\n" << s[0] << endl;
+				cout << "d[j]:\n" << d[0] << endl;
+				// ===
+				
+				if (ff(x_b + (s[j] * d[j]), ud1, ud2) < ff(x_b, ud1, ud2)) {	// Tutaj wymiary macierzy siê nie zgadzaj¹...
+					// liczba kolumn macierzy s[j] (1)nie zgadza siê z liczb¹ wierszy macierzy d[j] (2)
+				
+					x_b = x_b + (s[j] * d[j]);
+					lambda[j] = lambda[j] + s[j];
+					s[j] = s[j] * alpha;
 				}
 				else {
-					sj[j] = sj[j] * (-beta);
+					s[j] = s[j] * (-beta);
 					p[j] = p[j] + 1;
 				}
 			}
@@ -325,28 +333,99 @@ solution Rosen(matrix(*ff)(matrix, matrix, matrix), matrix x0, matrix s0, double
 			}
 
 			if (zmiana_bazy) {
-				//tu brakuje 
+				matrix Q = Rosen_getQ(n, lambda, d);
+				matrix vj(n, n, 0.0);
+				vj.set_col(Q[0], 0);
+				for (int j = 1; j < n; j++) {
+					vj.set_col(Rosen_getVj(n, j, Q, d), j);
+				}
+
+				for (int j = 0; j < n; j++) {
+					d[j] = (vj[j] / norm(vj[j]));
+				}
+
+				matrix lambda_(n, ZERO);
+				lambda = lambda_;
+				matrix p_(n, ZERO);
+				p = p_;
+				s = s0;
 			}
 
 			if (i > Nmax) {
 				przerwa = false;
 			}
 			for (int j = 0; j < n; j++) {
-				double a = sj(j);
+				double a = s(j);
 				if (abs(a) > epsilon) {
 					przerwa = false;
 				}
 			}
 
-		} while (przerwa = true);
+		} while (przerwa == true);
 
-		Xopt = x_b;
+		Xopt.x = x_b;
+		Xopt.y = ff(Xopt.x, ud1, ud2)(0, 0);
+		Xopt.f_calls = i;
 		return Xopt;
 	}
 	catch (string ex_info)
 	{
 		throw ("solution Rosen(...):\n" + ex_info);
 	}
+}
+
+matrix getBase(int n) {
+	double** base = new double* [n];
+	for (int i = 0; i < n; ++i) {
+		base[i] = new double[n];
+	}
+
+	for (int i = 0; i < n; ++i) {
+		for (int j = 0; j < n; ++j) {
+			if (j == i) {
+				base[i][j] = 1.0; 
+			}
+			else {
+				base[i][j] = 0.0; 
+			}
+		}
+	}
+	matrix baza(n, n, base);
+	return baza;
+}
+
+matrix Rosen_getQ(int n, matrix lambda, matrix d) {
+	double** tab = new double* [n];
+	for (int i = 0; i < n; ++i) {
+		tab[i] = new double[n];
+	}
+
+	for (int i = 0; i < n; ++i) {
+		for (int j = 0; j < n; ++j) {
+			if (j > i) {
+				tab[i][j] = 0.0;
+			}
+			else {
+				tab[i][j] = m2d(lambda[i]);
+			}
+		}
+	}
+	matrix Q_l(n, n, 0.0);
+	for (int j = 0; j < n; j++) {
+		Q_l.set_col(d[j], j);
+	}
+	matrix Q_r(n, n, tab);
+	return Q_l * Q_r;
+}
+
+matrix Rosen_getVj(int n, int j, matrix Q, matrix d) {
+	double* ZERO = new double[n] {};
+	matrix suma(n, ZERO);
+	for (int k = 1; k <= j - 1; k++) {
+		suma = suma + ((trans(Q[j]) * d[k]) * d[k]);
+	}
+	matrix result = Q[j] - suma;
+	return result;
 }
 
 solution pen(matrix(*ff)(matrix, matrix, matrix), matrix x0, double c, double dc, double epsilon, int Nmax, matrix ud1, matrix ud2)

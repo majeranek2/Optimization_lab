@@ -236,6 +236,16 @@ void lab2()
 	}
 	Sout.close();
 
+	alpha = 3.0;
+	double beta = 0.5;
+	int n = get_len(x0);
+	matrix S(n, n, 1.0);
+	x0(0, 0) = rand() % 10;
+	x0(1, 0) = rand() % 10;
+	optT = Rosen(ff2T, x0, S, alpha, beta, epsilon, Nmax);
+	cout << optT << endl;
+	solution::clear_calls();
+
 	//Problem rzeczywtsty:------------------------------------
 	x0(0, 0) = 5;
 	x0(1, 0) = 5;

@@ -15,4 +15,5 @@ matrix df1(double t, matrix, matrix ud1 = NAN, matrix ud2 = NAN);
 // LAB 2
 matrix ff2T(matrix x, matrix ud1 = NAN, matrix ud2 = NAN);
 matrix ff2T_2(matrix x, matrix ud1 = NAN, matrix ud2 = NAN);
+matrix df2(double t, matrix Y, matrix ud1 = NAN, matrix ud2 = NAN);
 
