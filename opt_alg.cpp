@@ -434,6 +434,7 @@ solution Rosen(matrix(*ff)(matrix, matrix, matrix), matrix x0, matrix s0, double
 			// DEBUG
 			cout << "\nNUMER ITERACJI: " << i << endl;
 			cout << "Macierz d: " <<endl << d << endl;
+			cout << "Macierz s: " <<endl << s << endl;
 
 			for (int j = 0; j < n; j++) {
 				matrix S = get_row(s, j); 
