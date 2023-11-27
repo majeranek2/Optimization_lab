@@ -12,6 +12,7 @@ solution lag(matrix(*ff)(matrix, matrix, matrix),  double a,  double b,  double 
 solution HJ(matrix(*ff)(matrix, matrix, matrix), matrix x0, double s, double alpha, double epsilon, int Nmax, matrix ud1 = NAN, matrix ud2 = NAN); // throw (string);
 matrix HJ_trial(matrix(*ff)(matrix, matrix, matrix), solution XB, double s, matrix ud1 = NAN, matrix ud2 = NAN); // throw (string);
 solution Rosen(matrix(*ff)(matrix, matrix, matrix), matrix x0, matrix s0, double alpha, double beta, double epsilon, int Nmax, matrix ud1 = NAN, matrix ud2 = NAN); // throw (string);
+matrix add_scalar_to_matrix_row(matrix& m, matrix scalar, int row);
 matrix getBase(int n);
 matrix Rosen_getQ(int n, matrix lambda, matrix d);
 matrix Rosen_getVj(int n, int j, matrix Q, matrix d);

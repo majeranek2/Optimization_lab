@@ -283,160 +283,143 @@ matrix  HJ_trial(matrix(*ff)(matrix, matrix, matrix), solution XB, double s, mat
 	}
 }
 
-//solution Rosen(matrix(*ff)(matrix, matrix, matrix), matrix x0, matrix s0, double alpha, double beta, double epsilon, int Nmax, matrix ud1, matrix ud2)
-//{
-//	try
-//	{
-//		solution Xopt;
-//		matrix x_b = x0;
-//		matrix s = s0;
-//
-//		int n = get_len(x0[0]);
-//		double* ZERO = new double[n] {};
-//
-//		matrix lambda(n, ZERO);
-//		
-//		matrix p(n, ZERO);
-//		matrix d = getBase(n);
-//
-//	/*	int* size_xb = get_size(x_b[0]);
-//		cout << "Size x_b: " << size_xb[0] << ", " << size_xb[1] << endl;
-//		int* size_s = get_size(s[0]);
-//		cout << "Size s: " << size_s[0] << ", " << size_s[1] << endl;
-//		int* size_d = get_size(d[0]);
-//		cout << "Size d: " << size_d[0] << ", " << size_d[1] << endl;*/
-//	
-//
-//
-//		int i = 0;
-//		bool przerwa = true;
-//
-//		do {
-//			for (int j = 0; j < n; j++) {
-//				matrix S = get_row(s, j);
-//				x_b = x0[j];
-//				// === DEBUG
-//				/*cout << "x_b:\n" << x_b << endl;
-//				cout << "S:\n" << S << endl;
-//				cout << "d:\n" << d << endl;*/
-//				// ===
-//				//
-//				//if (ff(x_b + (s[j] * d[j]), ud1, ud2) < ff(x_b, ud1, ud2)) {	// Tutaj wymiary macierzy siê nie zgadzaj¹...
-//				//
-//				//	x_b = x_b + (s[j] * d[j]);
-//				//	lambda[j] = lambda[j] + s[j];
-//				//	s[j] = s[j] * alpha;
-//				//}
-//				//else {
-//				//	s[j] = s[j] * (-beta);
-//				//	p[j] = p[j] + 1;
-//				//}
-//				
-//				if (ff(x_b + (S * d[j]), ud1, ud2) < ff(x_b, ud1, ud2)) {
-//					x_b = x_b + (S * d[j]);
-//					lambda[j] = lambda[j] + S;
-//					S = S * alpha;
-//				}
-//				else {
-//					for (int i = 0; i < n; i++) {
-//						S[i] = (-beta) * S[i];
-//					}
-//					//S = (-beta) * S;
-//					matrix p_ = get_row(p, j);
-//					p.set_row(p_, j);
-//				}
-//				cout << "ITERACJA NR " << i << ", kierunek " << j << ", " << "x_b = " << x_b << endl;
-//				//cout << "x_b + S * d[j] = " << (x_b + (S * d[j])) << endl;
-//				cout << "d = " << d << endl;
-//			
-//			}
-//			cout << endl << endl;
-//			i++;
-//
-//
-//
-//			bool zmiana_bazy = true;
-//			for (int j = 0; j < n; j++) {
-//				if (get_row(lambda, j) == 0.0 || get_row(p,j) == 0.0) {
-//					zmiana_bazy = false;
-//					break;
-//				}
-//			}
-//
-//			if (zmiana_bazy) {
-//				matrix Q = Rosen_getQ(n, lambda, d);
-//				matrix vj(n, n, 0.0);
-//				vj.set_col(Q[0], 0);
-//				for (int j = 1; j < n; j++) {
-//					vj.set_col(Rosen_getVj(n, j, Q, d), j);
-//				}
-//
-//				for (int j = 0; j < n; j++) {
-//					//d[j] = (vj[j] / norm(vj[j]));
-//					matrix temp = vj[j] / norm(vj[j]);
-//					d.set_col(temp, j);
-//				}
-//
-//				matrix lambda_(n, ZERO);
-//				lambda = lambda_;
-//				matrix p_(n, ZERO);
-//				p = p_;
-//				s = s0;
-//			}
-//
-//			if (i > Nmax) {
-//				przerwa = false;
-//			}
-//			/*for (int j = 0; j < n; j++) {
-//				double a = s(j);
-//				if (abs(a) > epsilon) {
-//					przerwa = false;
-//				}
-//			}*/
-//
-//		} while (przerwa == true);
-//
-//		Xopt.x = x_b;
-//		Xopt.y = ff(Xopt.x, ud1, ud2)(0, 0);
-//		Xopt.f_calls = i;
-//		return Xopt;
-//	}
-//	catch (string ex_info)
-//	{
-//		throw ("solution Rosen(...):\n" + ex_info);
-//	}
-//}
-//
-//matrix getBase(int n) {
-//	double** base = new double* [n];
-//	for (int i = 0; i < n; ++i) {
-//		base[i] = new double[n];
-//	}
-//
-//	for (int i = 0; i < n; ++i) {
-//		for (int j = 0; j < n; ++j) {
-//			if (j == i) {
-//				base[i][j] = 1.0; 
-//			}
-//			else {
-//				base[i][j] = 0.0; 
-//			}
-//		}
-//	}
-//	matrix baza(n, n, base);
-//	return baza;
-//}
+////solution Rosen(matrix(*ff)(matrix, matrix, matrix), matrix x0, matrix s0, double alpha, double beta, double epsilon, int Nmax, matrix ud1, matrix ud2)
+////{
+////	try
+////	{
+////		solution Xopt;
+////		matrix x_b = x0;
+////		matrix s = s0;
+////
+////		int n = get_len(x0[0]);
+////		double* ZERO = new double[n] {};
+////
+////		matrix lambda(n, ZERO);
+////		
+////		matrix p(n, ZERO);
+////		matrix d = getBase(n);
+////
+////	/*	int* size_xb = get_size(x_b[0]);
+////		cout << "Size x_b: " << size_xb[0] << ", " << size_xb[1] << endl;
+////		int* size_s = get_size(s[0]);
+////		cout << "Size s: " << size_s[0] << ", " << size_s[1] << endl;
+////		int* size_d = get_size(d[0]);
+////		cout << "Size d: " << size_d[0] << ", " << size_d[1] << endl;*/
+////	
+////
+////
+////		int i = 0;
+////		bool przerwa = true;
+////
+////		do {
+////			for (int j = 0; j < n; j++) {
+////				matrix S = get_row(s, j);
+////				x_b = x0[j];
+////				 === DEBUG
+////				/*cout << "x_b:\n" << x_b << endl;
+////				cout << "S:\n" << S << endl;
+////				cout << "d:\n" << d << endl;*/
+////				 ===
+////				
+////				if (ff(x_b + (s[j] * d[j]), ud1, ud2) < ff(x_b, ud1, ud2)) {	// Tutaj wymiary macierzy siê nie zgadzaj¹...
+////				
+////					x_b = x_b + (s[j] * d[j]);
+////					lambda[j] = lambda[j] + s[j];
+////					s[j] = s[j] * alpha;
+////				}
+////				else {
+////					s[j] = s[j] * (-beta);
+////					p[j] = p[j] + 1;
+////				}
+////				
+////				if (ff(x_b + (S * d[j]), ud1, ud2) < ff(x_b, ud1, ud2)) {
+////					x_b = x_b + (S * d[j]);
+////					lambda[j] = lambda[j] + S;
+////					S = S * alpha;
+////				}
+////				else {
+////					for (int i = 0; i < n; i++) {
+////						S[i] = (-beta) * S[i];
+////					}
+////					S = (-beta) * S;
+////					matrix p_ = get_row(p, j);
+////					p.set_row(p_, j);
+////				}
+////				cout << "ITERACJA NR " << i << ", kierunek " << j << ", " << "x_b = " << x_b << endl;
+////				cout << "x_b + S * d[j] = " << (x_b + (S * d[j])) << endl;
+////				cout << "d = " << d << endl;
+////			
+////			}
+////			cout << endl << endl;
+////			i++;
+////
+////
+////
+////			bool zmiana_bazy = false;
+////			for (int j = 0; j < n; j++) {
+////				if (get_row(lambda, j) != 0.0 && get_row(p,j) != 0.0) {
+////					zmiana_bazy = true;
+////					break;
+////				}
+////			}
+////
+////			if (zmiana_bazy) {
+////				matrix Q = Rosen_getQ(n, lambda, d);
+////				matrix vj(n, n, 0.0);
+////				vj.set_col(Q[0], 0);
+////				for (int j = 1; j < n; j++) {
+////					vj.set_col(Rosen_getVj(n, j, Q, d), j);
+////				}
+////
+////				for (int j = 0; j < n; j++) {
+////					d[j] = (vj[j] / norm(vj[j]));
+////					matrix temp = vj[j] / norm(vj[j]);
+////					d.set_col(temp, j);
+////				}
+////
+////				matrix lambda_(n, ZERO);
+////				lambda = lambda_;
+////				matrix p_(n, ZERO);
+////				p = p_;
+////				s = s0;
+////			}
+////
+////			if (i > Nmax) {
+////				przerwa = false;
+////			}
+////			/*for (int j = 0; j < n; j++) {
+////				double a = s(j);
+////				if (abs(a) > epsilon) {
+////					przerwa = false;
+////				}
+////			}*/
+////
+////		} while (przerwa == true);
+////
+////		Xopt.x = x_b;
+////		Xopt.y = ff(Xopt.x, ud1, ud2)(0, 0);
+////		Xopt.f_calls = i;
+////		return Xopt;
+////	}
+////	catch (string ex_info)
+////	{
+////		throw ("solution Rosen(...):\n" + ex_info);
+////	}
+////}
+
 
 solution Rosen(matrix(*ff)(matrix, matrix, matrix), matrix x0, matrix s0, double alpha, double beta, double epsilon, int Nmax, matrix ud1, matrix ud2)
 {
 	try
 	{
 		solution Xopt;
-		matrix x;	// ???
-		matrix x_b = x0;
+		matrix x_b = x0;	// punkt startowy
 		matrix s = s0;
 		int n = get_len(x_b);
-		// s = [1 ,1]
+		// Przykladowy wyglad macierzy s i jednej z kolumn macierzy d:
+		// s = [1 ,1,
+		//		  1, 1]
+		// pierwszy WIERSZ macierzy s odpowiada wartosci x0 i pierwszej kolumnie d
 
 		// d[0] = [1,
 		//				0]
@@ -448,25 +431,83 @@ solution Rosen(matrix(*ff)(matrix, matrix, matrix), matrix x0, matrix s0, double
 		int i = 0;
 
 		while (i <= Nmax) {
+			// DEBUG
+			cout << "\nNUMER ITERACJI: " << i << endl;
+			cout << "Macierz d: " << d << endl;
+
 			for (int j = 0; j < n; j++) {
-				matrix S = get_row(s, j);
+				matrix S = get_row(s, j); 
+				// S - macierz pozioma 1x2, aby mozna pomnozyc j¹ z d[j], ktora jest 2x1
 				if (ff(x_b + (S * d[j]), ud1, ud2) < ff(x_b, ud1, ud2)) {
 					x_b = x_b + (S * d[j]);
-					lambda[j] = lambda[j] + S;
-					for (int k = 0; k < n; k++)
-						S[k] = S[k] * alpha;
-					//				}
+					//lambda[j] = lambda[j] + S;
+					add_scalar_to_matrix_row(lambda, S[j], j);	// tzn. lambda (i+1) = lambda(i) + s[j]
+					for (int k = 0; k < n; k++)	// tzn. alpha * S[j]
+						S[k] = alpha * S[k];
+				}
+				else {
+					for (int k = 0; k < n; k++)	// tzn. - beta * S[j]
+						S[k] = -beta * S[k];
+					matrix one(1.0);
+					add_scalar_to_matrix_row(p, one, j);
+				}
+			
+			}
+			
+			// DEBUG
+			cout << "Polozenie punktu x" << i << ": " << endl << x_b << endl;
+			cout << "Lambda[0]: " << get_row(lambda, 0) << endl;
+			cout << "Lambda[1]: " << get_row(lambda, 1) << endl;
+			cout << "p[0]: " << get_row(p, 0) << endl;
+			cout << "p[1]: " << get_row(p, 1) << endl;
+			
+			bool zmiana_bazy = false;
+			for (int j = 0; j < n; j++) {
+				if (get_row(lambda, j) != 0 && get_row(p, j) != 0) {
+					zmiana_bazy = true;
 				}
 			}
 
+			if (zmiana_bazy) {
+				matrix Q = Rosen_getQ(n, lambda, d);
+				for (int j = 0; j < n; j++) {
+					d[j] = (Rosen_getVj(n, j, Q, d) / norm(Rosen_getVj(n, j, Q, d)));
+				}
 
-			return Xopt;
+				matrix zero(0.0);
+				for (int k = 0; k < n; k++) {
+					lambda.set_row(zero, k);	// zerujemy macierze
+					p.set_row(zero, k);	
+				}
+				s = s0;
+			}
+
+			// DEBUG
+			if (zmiana_bazy) {
+				cout << "ZMIANA BAZY.\n" << "Nowa baza:\n" << d;
+			}
+			cout << "===============================\n\n";
+		
+
+			i++;
 		}
+		// tutaj: warunek na epsilon
+		Xopt.x = x_b;
+		Xopt.y = ff(Xopt.x, ud1, ud2)(0, 0);
+		Xopt.f_calls = i;
+		return Xopt;
 	}
 	catch (string ex_info)
 	{
 		throw ("solution Rosen(...):\n" + ex_info);
 	}
+}
+
+matrix add_scalar_to_matrix_row(matrix &m, matrix scalar, int row) {
+	matrix element = get_row(m, row);
+	element = element + scalar;
+	m.set_row(element, row);
+	return m;
 }
 
 matrix getBase(int n) {
@@ -501,7 +542,7 @@ matrix Rosen_getQ(int n, matrix lambda, matrix d) {
 				tab[i][j] = 0.0;
 			}
 			else {
-				tab[i][j] = m2d(lambda[i]);
+				tab[i][j] = m2d(get_row(lambda, i));
 			}
 		}
 	}
@@ -514,13 +555,19 @@ matrix Rosen_getQ(int n, matrix lambda, matrix d) {
 }
 
 matrix Rosen_getVj(int n, int j, matrix Q, matrix d) {
-	double* ZERO = new double[n] {};
-	matrix suma(n, ZERO);
-	for (int k = 1; k <= j - 1; k++) {
-		suma = suma + ((trans(Q[j]) * d[k]) * d[k]);
+	if (j == 0) {
+		matrix result = Q[0];
+		return result;
 	}
-	matrix result = Q[j] - suma;
-	return result;
+	else {
+		double* ZERO = new double[n] {};
+		matrix suma(n, ZERO);
+		for (int k = 1; k <= j - 1; k++) {
+			suma = suma + ((trans(Q[j]) * d[k]) * d[k]);
+		}
+		matrix result = Q[j] - suma;
+		return result;
+	}
 }
 
 solution pen(matrix(*ff)(matrix, matrix, matrix), matrix x0, double c, double dc, double epsilon, int Nmax, matrix ud1, matrix ud2)
