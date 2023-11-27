@@ -433,7 +433,7 @@ solution Rosen(matrix(*ff)(matrix, matrix, matrix), matrix x0, matrix s0, double
 		while (i <= Nmax) {
 			// DEBUG
 			cout << "\nNUMER ITERACJI: " << i << endl;
-			cout << "Macierz d: " << d << endl;
+			cout << "Macierz d: " <<endl << d << endl;
 
 			for (int j = 0; j < n; j++) {
 				matrix S = get_row(s, j); 
@@ -461,9 +461,11 @@ solution Rosen(matrix(*ff)(matrix, matrix, matrix), matrix x0, matrix s0, double
 			cout << "p[0]: " << get_row(p, 0) << endl;
 			cout << "p[1]: " << get_row(p, 1) << endl;
 			
+
+			matrix zero(0.0);
 			bool zmiana_bazy = false;
 			for (int j = 0; j < n; j++) {
-				if (get_row(lambda, j) != 0 && get_row(p, j) != 0) {
+				if (get_row(lambda, j) != zero && get_row(p, j) != zero) {
 					zmiana_bazy = true;
 				}
 			}
@@ -474,7 +476,6 @@ solution Rosen(matrix(*ff)(matrix, matrix, matrix), matrix x0, matrix s0, double
 					d[j] = (Rosen_getVj(n, j, Q, d) / norm(Rosen_getVj(n, j, Q, d)));
 				}
 
-				matrix zero(0.0);
 				for (int k = 0; k < n; k++) {
 					lambda.set_row(zero, k);	// zerujemy macierze
 					p.set_row(zero, k);	
