@@ -182,9 +182,9 @@ void lab2()
 	srand(time(NULL));
 	matrix ud1, ud2;
 	solution optT;
-	double epsilon = 0.01;
+	double epsilon = 0.0001;
 	double alpha = 0.5;
-	int Nmax = 100;
+	int Nmax = 250;
 	matrix x0(2, 1);
 	matrix x(2, 1);
 	x0(0, 0) = 0.5;  // Wartoœæ pocz¹tkowa dla x1
@@ -241,8 +241,6 @@ void lab2()
 	// losowe liczby double od -1 do 1
 	X0(0, 0) = -1.0 + 2.0 * static_cast <double> (rand()) / static_cast <double> (RAND_MAX);
 	X0(1, 0) = -1.0 + 2.0 * static_cast <double> (rand()) / static_cast <double> (RAND_MAX);
-	//X0(0, 0) = -0.5;
-	//X0(1, 0) = 1.0;
 
 	matrix Alpha(3.0);
 	matrix beta(0.5);
@@ -251,17 +249,17 @@ void lab2()
 	matrix S(n, tab);
 	cout << "S:\n" << S << endl;
 
-	/*cout << "Punkty poczatkowe:\n";
-	cout << "x0: " << endl << X0 << endl;*/
+	cout << "Punkty poczatkowe:\n";
+	cout << "x0: " << endl << X0 << endl << endl;
 
 	optT = Rosen(ff2T, X0, S, Alpha, beta, epsilon, Nmax);
 	cout << optT << endl;
 	solution::clear_calls();
 
 	//Problem rzeczywtsty:------------------------------------
-	x0(0, 0) = 5;
+	/*x0(0, 0) = 5;
 	x0(1, 0) = 5;
-	s = 1;
+	s = 1;*/
 
 	//optT = HJ(ff2R, x0, s, alpha, epsilon, Nmax, ud1, ud2);
 	//cout << optT << endl;
