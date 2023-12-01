@@ -239,12 +239,12 @@ void lab2()
 
 	matrix X0(2, 1);
 	// losowe liczby double od -1 do 1
-	//X0(0, 0) = -1.0 + 2.0 * static_cast <double> (rand()) / static_cast <double> (RAND_MAX);
-	//X0(1, 0) = -1.0 + 2.0 * static_cast <double> (rand()) / static_cast <double> (RAND_MAX);
-	X0(0, 0) = -0.5;
-	X0(1, 0) = 1.0;
+	X0(0, 0) = -1.0 + 2.0 * static_cast <double> (rand()) / static_cast <double> (RAND_MAX);
+	X0(1, 0) = -1.0 + 2.0 * static_cast <double> (rand()) / static_cast <double> (RAND_MAX);
+	//X0(0, 0) = -0.5;
+	//X0(1, 0) = 1.0;
 
-	matrix Alpha(2.0);
+	matrix Alpha(3.0);
 	matrix beta(0.5);
 	int n = get_len(X0[0]);
 	double tab[] = { 1.0, 1.0 };

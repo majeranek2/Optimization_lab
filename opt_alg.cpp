@@ -466,9 +466,11 @@ solution Rosen(matrix(*ff)(matrix, matrix, matrix), matrix x0, matrix s0, matrix
 				//cout << "\n\n\n TUTAJ MACIERZ Q!!\n" << Q << endl;
 
 				for (int j = 0; j < n; j++) {
-					/*cout << "SANITY CHECK DLA J = " << j << endl;
+					cout << "SANITY CHECK DLA J = " << j << endl;
+					cout << "MACIERZ Q:\n" << Q << endl;
 					cout << "ROSEN GET VJ:\n" << Rosen_getVj(n, j, Q, d) << endl;
-					cout << "NORM:\n" << norm(Rosen_getVj(n, j, Q, d)) << endl;*/
+					cout << "NORM:\n" << norm(Rosen_getVj(n, j, Q, d)) << endl;
+					cout << "d" << j << "\n" << (Rosen_getVj(n, j, Q, d) / norm(Rosen_getVj(n, j, Q, d))) << endl;
 					// Tutaj norma wynosi 0 i siê psuje xd
 					d.set_col((Rosen_getVj(n, j, Q, d) / norm(Rosen_getVj(n, j, Q, d))), j);
 				}
