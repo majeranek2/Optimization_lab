@@ -99,6 +99,7 @@ matrix ff2T_2(matrix x, matrix ud1, matrix ud2) {
 	y = 2.5 * pow((x(0) * x(0) - x(1)), 2)+pow((1-x(0)),2);
 	return y;
 }
+
 matrix ff2R(matrix x, matrix ud1, matrix ud2) {
 	matrix Y0 = matrix(2, 1);
 	matrix Y_ref(2, new double[2] {3.14, 0});

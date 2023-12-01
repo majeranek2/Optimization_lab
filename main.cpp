@@ -239,17 +239,22 @@ void lab2()
 
 	matrix X0(2, 1);
 	// losowe liczby double od -1 do 1
-	X0(0, 0) = -1.0 + 2.0 * static_cast <double> (rand()) / static_cast <double> (RAND_MAX);
-	X0(1, 0) = -1.0 + 2.0 * static_cast <double> (rand()) / static_cast <double> (RAND_MAX);
+	//X0(0, 0) = -1.0 + 2.0 * static_cast <double> (rand()) / static_cast <double> (RAND_MAX);
+	//X0(1, 0) = -1.0 + 2.0 * static_cast <double> (rand()) / static_cast <double> (RAND_MAX);
+	X0(0, 0) = -0.5;
+	X0(1, 0) = 1.0;
 
-	alpha = 3.0;
-	double beta = 0.5;
+	matrix Alpha(2.0);
+	matrix beta(0.5);
 	int n = get_len(X0[0]);
-	matrix S(n, n, 1.0);
+	double tab[] = { 1.0, 1.0 };
+	matrix S(n, tab);
+	cout << "S:\n" << S << endl;
+
 	/*cout << "Punkty poczatkowe:\n";
 	cout << "x0: " << endl << X0 << endl;*/
 
-	optT = Rosen(ff2T, X0, S, alpha, beta, epsilon, Nmax);
+	optT = Rosen(ff2T, X0, S, Alpha, beta, epsilon, Nmax);
 	cout << optT << endl;
 	solution::clear_calls();
 

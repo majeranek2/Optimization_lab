@@ -408,21 +408,14 @@ matrix  HJ_trial(matrix(*ff)(matrix, matrix, matrix), solution XB, double s, mat
 ////}
 
 
-solution Rosen(matrix(*ff)(matrix, matrix, matrix), matrix x0, matrix s0, double alpha, double beta, double epsilon, int Nmax, matrix ud1, matrix ud2)
+solution Rosen(matrix(*ff)(matrix, matrix, matrix), matrix x0, matrix s0, matrix alpha, matrix beta, double epsilon, int Nmax, matrix ud1, matrix ud2)
 {
 	try
 	{
 		solution Xopt;
-		matrix x_b = x0;	// punkt startowy
+		matrix x_b = x0;	
 		matrix s = s0;
 		int n = get_len(x_b);
-		// Przykladowy wyglad macierzy s i jednej z kolumn macierzy d:
-		// s = [1 ,1,
-		//		  1, 1]
-		// pierwszy WIERSZ macierzy s odpowiada wartosci x0 i pierwszej kolumnie d
-
-		// d[0] = [1,
-		//				0]
 
 		double* ZERO = new double[n] {};
 		matrix lambda(n, ZERO);
@@ -433,36 +426,33 @@ solution Rosen(matrix(*ff)(matrix, matrix, matrix), matrix x0, matrix s0, double
 		while (i <= Nmax) {
 			// DEBUG
 			cout << "\nNUMER ITERACJI: " << i << endl;
+			cout << "Polozenie punktu x" << i << ": " << endl << x_b << endl;
 			cout << "Macierz d: " <<endl << d << endl;
 			cout << "Macierz s: " <<endl << s << endl;
+			cout << "-----------------------\n";
 
 			for (int j = 0; j < n; j++) {
-				matrix S = get_row(s, j); 
-				// S - macierz pozioma 1x2, aby mozna pomnozyc j¹ z d[j], ktora jest 2x1
-				if (ff(x_b + (S * d[j]), ud1, ud2) < ff(x_b, ud1, ud2)) {
-					x_b = x_b + (S * d[j]);
-					//lambda[j] = lambda[j] + S;
-					add_scalar_to_matrix_row(lambda, S[j], j);	// tzn. lambda (i+1) = lambda(i) + s[j]
-					for (int k = 0; k < n; k++)	// tzn. alpha * S[j]
-						S[k] = alpha * S[k];
+				cout << "Kierunek: " << j << endl;
+				if (ff(x_b + (get_row(s, j) * d[j]), ud1, ud2) < ff(x_b, ud1, ud2)) {
+					cout << "WARUNEK SPE£NIONY: " << ff(x_b + (get_row(s, j) * d[j]), ud1, ud2) << " < " << ff(x_b, ud1, ud2) << endl;
+					x_b = x_b + (get_row(s, j) * d[j]);
+					add_scalar_to_matrix_row(lambda, get_row(s, j), j);
+					multiply_matrix_row_by_scalar(s, alpha, j);
+					
 				}
 				else {
-					for (int k = 0; k < n; k++)	// tzn. - beta * S[j]
-						S[k] = -beta * S[k];
+					cout << "WARUNEK NIE JEST SPE£NIONY: " << ff(x_b + (get_row(s, j) * d[j]), ud1, ud2) << " > " << ff(x_b, ud1, ud2) << endl;
+					multiply_matrix_row_by_scalar(s, -beta, j);
 					matrix one(1.0);
 					add_scalar_to_matrix_row(p, one, j);
 				}
-			
+				// DEBUG
+				cout << endl << "Polozenie punktu x" << i << ": " << endl << x_b << endl << endl;
+				cout << "Lambda: " << endl << lambda << endl << endl;
+				cout << "p: " << endl << p << endl << endl;
+				cout << "s: " << endl << s << endl << endl;
 			}
 			
-			// DEBUG
-			cout << "Polozenie punktu x" << i << ": " << endl << x_b << endl;
-			cout << "Lambda[0]: " << get_row(lambda, 0) << endl;
-			cout << "Lambda[1]: " << get_row(lambda, 1) << endl;
-			cout << "p[0]: " << get_row(p, 0) << endl;
-			cout << "p[1]: " << get_row(p, 1) << endl;
-			
-
 			matrix zero(0.0);
 			bool zmiana_bazy = false;
 			for (int j = 0; j < n; j++) {
@@ -473,8 +463,14 @@ solution Rosen(matrix(*ff)(matrix, matrix, matrix), matrix x0, matrix s0, double
 
 			if (zmiana_bazy) {
 				matrix Q = Rosen_getQ(n, lambda, d);
+				//cout << "\n\n\n TUTAJ MACIERZ Q!!\n" << Q << endl;
+
 				for (int j = 0; j < n; j++) {
-					d[j] = (Rosen_getVj(n, j, Q, d) / norm(Rosen_getVj(n, j, Q, d)));
+					/*cout << "SANITY CHECK DLA J = " << j << endl;
+					cout << "ROSEN GET VJ:\n" << Rosen_getVj(n, j, Q, d) << endl;
+					cout << "NORM:\n" << norm(Rosen_getVj(n, j, Q, d)) << endl;*/
+					// Tutaj norma wynosi 0 i siê psuje xd
+					d.set_col((Rosen_getVj(n, j, Q, d) / norm(Rosen_getVj(n, j, Q, d))), j);
 				}
 
 				for (int k = 0; k < n; k++) {
@@ -488,6 +484,7 @@ solution Rosen(matrix(*ff)(matrix, matrix, matrix), matrix x0, matrix s0, double
 			if (zmiana_bazy) {
 				cout << "ZMIANA BAZY.\n" << "Nowa baza:\n" << d;
 			}
+			cout << "===============================\n";
 			cout << "===============================\n\n";
 		
 
@@ -508,6 +505,13 @@ solution Rosen(matrix(*ff)(matrix, matrix, matrix), matrix x0, matrix s0, double
 matrix add_scalar_to_matrix_row(matrix &m, matrix scalar, int row) {
 	matrix element = get_row(m, row);
 	element = element + scalar;
+	m.set_row(element, row);
+	return m;
+}
+
+matrix multiply_matrix_row_by_scalar(matrix& m, matrix scalar, int row) {
+	matrix element = get_row(m, row);
+	element = scalar * element;
 	m.set_row(element, row);
 	return m;
 }
@@ -548,12 +552,9 @@ matrix Rosen_getQ(int n, matrix lambda, matrix d) {
 			}
 		}
 	}
-	matrix Q_l(n, n, 0.0);
-	for (int j = 0; j < n; j++) {
-		Q_l.set_col(d[j], j);
-	}
+
 	matrix Q_r(n, n, tab);
-	return Q_l * Q_r;
+	return d * Q_r;
 }
 
 matrix Rosen_getVj(int n, int j, matrix Q, matrix d) {
@@ -564,10 +565,15 @@ matrix Rosen_getVj(int n, int j, matrix Q, matrix d) {
 	else {
 		double* ZERO = new double[n] {};
 		matrix suma(n, ZERO);
-		for (int k = 1; k <= j - 1; k++) {
+		for (int k = 0; k <= j-1; k++) {
 			suma = suma + ((trans(Q[j]) * d[k]) * d[k]);
 		}
 		matrix result = Q[j] - suma;
+		/*cout << "TUTAJ BUG???\n\n";
+		cout << "Q[j] = \n" << Q[j] << endl;
+		cout << "suma matrix = \n" << suma << endl;
+		cout << "result matrix = \n" << result << endl;*/
+
 		return result;
 	}
 }
