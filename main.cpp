@@ -184,10 +184,10 @@ void lab2()
 	solution optT;
 	double epsilon = 0.0001;
 	double alpha = 0.5;
-	int Nmax = 250;
+	int Nmax = 100;
 	matrix x0(2, 1);
 	matrix x(2, 1);
-	x0(0, 0) = 0.5;  // Wartoœæ pocz¹tkowa dla x1
+	x0(0, 0) = 0.5;  
 	x0(1, 0) = 0.5;
 	double s = 0.5;
 	//optT = HJ(ff2T, x0, s, alpha, epsilon,Nmax,ud1,ud2);
@@ -224,7 +224,7 @@ void lab2()
 
 
 			//algorytm Rosenbroka
-			/*optT = Rosen(ff2T, x0, krok, alpha, epsilon, Nmax, ud1, ud2);
+			/*optT = Rosen(ff2T, x0, krok, alpha, epsilon, Nmax, ud1, ud2);	// zmieniæ to trzeba...
 			x = optT.x;
 			Sout << hcat(x0(0, 0), x0(1, 0));
 			Sout << hcat(x(0, 0), x(1, 0));
@@ -236,34 +236,23 @@ void lab2()
 	}
 	Sout.close();
 
-
-	matrix X0(2, 1);
 	// losowe liczby double od -1 do 1
-	X0(0, 0) = -1.0 + 2.0 * static_cast <double> (rand()) / static_cast <double> (RAND_MAX);
-	X0(1, 0) = -1.0 + 2.0 * static_cast <double> (rand()) / static_cast <double> (RAND_MAX);
+	x0(0, 0) = -1.0 + 2.0 * static_cast <double> (rand()) / static_cast <double> (RAND_MAX);
+	x0(1, 0) = -1.0 + 2.0 * static_cast <double> (rand()) / static_cast <double> (RAND_MAX);
 
-	matrix Alpha(3.0);
+	matrix Alpha(3.0);	// Alpha i beta do Rosenbrocka maj¹ byæ matrix
 	matrix beta(0.5);
-	int n = get_len(X0[0]);
+	int n = get_len(x0[0]);
 	double tab[] = { 1.0, 1.0 };
-	matrix S(n, tab);
+	matrix S(n, tab);	// S - macierz pionowa, 1 kolumna, wype³niona liczbami 1.0
 	cout << "S:\n" << S << endl;
 
 	cout << "Punkty poczatkowe:\n";
-	cout << "x0: " << endl << X0 << endl << endl;
+	cout << "x0: " << endl << x0 << endl << endl;
 
-	optT = Rosen(ff2T, X0, S, Alpha, beta, epsilon, Nmax);
+	optT = Rosen(ff2T, x0, S, Alpha, beta, epsilon, Nmax);
 	cout << optT << endl;
 	solution::clear_calls();
-
-	//Problem rzeczywtsty:------------------------------------
-	/*x0(0, 0) = 5;
-	x0(1, 0) = 5;
-	s = 1;*/
-
-	//optT = HJ(ff2R, x0, s, alpha, epsilon, Nmax, ud1, ud2);
-	//cout << optT << endl;
-	//solution::clear_calls();
 }
 
 void lab3()
