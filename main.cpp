@@ -244,52 +244,34 @@ void lab2()
 	//x0(0, 0) = -1.0 + 2.0 * static_cast <double> (rand()) / static_cast <double> (RAND_MAX);
 	//x0(1, 0) = -1.0 + 2.0 * static_cast <double> (rand()) / static_cast <double> (RAND_MAX);
 
-	//matrix Alpha(3.0);	// Alpha i beta do Rosenbrocka maj¹ byæ matrix
-	//matrix beta(0.5);
-	//int n = get_len(x0[0]);
-	//double tab[] = { 1.0, 1.0 };
-	//matrix S(n, tab);	// S - macierz pionowa, 1 kolumna, wype³niona liczbami 1.0
-	//cout << "S:\n" << S << endl;
 
-	//cout << "Punkty poczatkowe:\n";
-	//cout << "x0: " << endl << x0 << endl << endl;
+	matrix X0(2, 1);
+	// losowe liczby double od -1 do 1
+	X0(0, 0) = -1.0 + 2.0 * static_cast <double> (rand()) / static_cast <double> (RAND_MAX);
+	X0(1, 0) = -1.0 + 2.0 * static_cast <double> (rand()) / static_cast <double> (RAND_MAX);
 
-	//optT = Rosen(ff2T, x0, S, Alpha, beta, epsilon, Nmax);
+	matrix Alpha(3.0);
+	matrix beta(0.5);
+	int n = get_len(X0[0]);
+	double tab[] = { 1.0, 1.0 };
+	matrix S(n, tab);
+	cout << "S:\n" << S << endl;
+
+	cout << "Punkty poczatkowe:\n";
+	cout << "x0: " << endl << X0 << endl << endl;
+
+	optT = Rosen(ff2T, X0, S, Alpha, beta, epsilon, Nmax);
+	cout << optT << endl;
+	solution::clear_calls();
+
+	//Problem rzeczywtsty:------------------------------------
+	/*x0(0, 0) = 5;
+	x0(1, 0) = 5;
+	s = 1;*/
+
+	//optT = HJ(ff2R, x0, s, alpha, epsilon, Nmax, ud1, ud2);
 	//cout << optT << endl;
 	//solution::clear_calls();
-
-	//------PROBLEM RZECZYWISTY--------------------------------------------------
-			//ofstream Sout("wyniki_lab_2_rzeczysisty.csv");
-			//matrix k0(2, 1);
-			//matrix k_HJ(2, 1);
-			//matrix k_R(2, 1);
-			//k0(0,0) = std::rand() % 11;
-			//k0(1,0) = std::rand() % 11;
-			//double krok = 0.6;
-			//optT = HJ(ff2R, k0, krok, alpha, epsilon, Nmax, ud1, ud2); 
-			//k_HJ = optT.x;
-			//Sout << hcat(k_HJ(0, 0), k_HJ(1, 0));
-			//Sout << hcat(optT.y, optT.f_calls);
-			//solution::clear_calls();
-			//optT = Rosen(ff2R, k0, S, Alpha, beta, epsilon, Nmax);
-			//k_R = optT.x;
-			//Sout << hcat(k_R(0, 0), k_R(1, 0));
-			//Sout << hcat(optT.y, optT.f_calls);
-			//Sout << "\n";
-			//solution::clear_calls();
-			//Sout.close();
-
-	//-------SYMULACJA----------------------
-	//ofstream LAG("symulacja_HJ.csv");
-	//matrix Y0 = matrix(2, 1);
-	//matrix Y_ref(2, new double[2] {3.14, 0});
-	//matrix y;
-	//double tend = 100;
-	//double t0 = 0;
-	//double dt = 0.1;
-	//matrix* Y = solve_ode(df2, t0, dt, tend, Y0, Y_ref, x);
-
-
 }
 
 void lab3()
