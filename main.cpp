@@ -22,7 +22,7 @@ int main()
 {
 	try
 	{
-		lab2();
+		lab3();
 	}
 	catch (string EX_INFO)
 	{
@@ -276,7 +276,8 @@ void lab2()
 
 void lab3()
 {
-
+	matrix ud1, ud2;
+	solution optT;
 }
 
 void lab4()
