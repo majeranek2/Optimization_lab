@@ -18,3 +18,6 @@ matrix ff2T_2(matrix x, matrix ud1 = NAN, matrix ud2 = NAN);
 matrix df2(double t, matrix Y, matrix ud1 = NAN, matrix ud2 = NAN);
 matrix ff2R(matrix x, matrix ud1 = NAN, matrix ud2 = NAN);
 
+// LAB 3
+matrix ff3T_2(matrix x, matrix ud1, matrix ud2);
+

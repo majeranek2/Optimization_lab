@@ -177,107 +177,119 @@ void lab1()
 */
 
 
-void lab2()
-{
-	srand(time(NULL));
-	matrix ud1, ud2;
-	solution optT;
-	double epsilon = 0.0001;
-	double alpha = 0.5;
-	int Nmax = 100;
-	matrix x0(2, 1);
-	matrix x(2, 1);
-	x0(0, 0) = 0.5;  
-	x0(1, 0) = 0.5;
-	double s = 0.5;
-	matrix Alpha(3.0);	// Alpha i beta do Rosenbrocka maj¹ byæ matrix
-	matrix beta(0.5);
-	int n = get_len(x0[0]);
-	double tab[] = { 1.0, 1.0 };
-	matrix S(n, tab);	// S - macierz pionowa, 1 kolumna, wype³niona liczbami 1.0
-
-
-
-
-	//--------------Funkcja testowa celu zadanie:----------------------------
-			//ofstream Sout("wyniki_lab_2.csv");
-			//for (double krok = 0.4; krok < 1.5; krok += 0.5) {
-			//	for (int i = 0; i < 100; i++) {
-			//		x0(0, 0) = -1.0 + 2.0 * static_cast <double> (rand()) / static_cast <double> (RAND_MAX);
-			//		x0(1, 0) = -1.0 + 2.0 * static_cast <double> (rand()) / static_cast <double> (RAND_MAX);
-			//		optT = HJ(ff2T, x0, krok, alpha, epsilon, Nmax, ud1, ud2);
-			//		x = optT.x;
-			//		Sout << hcat(x0(0, 0), x0(1, 0));
-			//		Sout << hcat(x(0, 0), x(1, 0));
-			//		Sout << hcat(optT.y, optT.f_calls) ;
-			//		//Zamieniæ wy¿sza linija na to przy dodaniu rosenbroka, bo /n rozpierdzieli 
-			//		// b³edy bedzue calls dwa razy wypisany jak ostatnio
-			//		//Sout << hcat(optT.f_calls, optT.f_calls);
-			//		solution::clear_calls();
-			//		S(0, 0) = krok;
-			//		S(1, 0) = krok;
-			//		
-			//		//algorytm Rosenbroka
-			//		optT = Rosen(ff2T, x0, S, Alpha, beta, epsilon, Nmax);
-			//		x = optT.x;
-			//		Sout << hcat(x(0, 0), x(1, 0));
-			//		Sout << hcat(optT.y, optT.f_calls);
-			//		Sout << "\n";
-			//		solution::clear_calls();
-
-			//	}
-			//	//Sout << "\n\n";
-			//}
-			//Sout.close();
-			 
-	//-------------przyadek do wykresu--------------------------------
-				double krok = 0.6;
-				S(0, 0) = krok;
-				S(1, 0) = krok;
-				optT = HJ(ff2T, x0, krok, alpha, epsilon, Nmax, ud1, ud2);
-				cout << optT << endl;
-				solution::clear_calls();
-				optT = Rosen(ff2T, x0, S, Alpha, beta, epsilon, Nmax);
-				cout << optT << endl;
-				solution::clear_calls();
-	//// losowe liczby double od -1 do 1
-	//x0(0, 0) = -1.0 + 2.0 * static_cast <double> (rand()) / static_cast <double> (RAND_MAX);
-	//x0(1, 0) = -1.0 + 2.0 * static_cast <double> (rand()) / static_cast <double> (RAND_MAX);
-
-
-	matrix X0(2, 1);
-	// losowe liczby double od -1 do 1
-	X0(0, 0) = -1.0 + 2.0 * static_cast <double> (rand()) / static_cast <double> (RAND_MAX);
-	X0(1, 0) = -1.0 + 2.0 * static_cast <double> (rand()) / static_cast <double> (RAND_MAX);
-
-	matrix Alpha(3.0);
-	matrix beta(0.5);
-	int n = get_len(X0[0]);
-	double tab[] = { 1.0, 1.0 };
-	matrix S(n, tab);
-	cout << "S:\n" << S << endl;
-
-	cout << "Punkty poczatkowe:\n";
-	cout << "x0: " << endl << X0 << endl << endl;
-
-	optT = Rosen(ff2T, X0, S, Alpha, beta, epsilon, Nmax);
-	cout << optT << endl;
-	solution::clear_calls();
-
-	//Problem rzeczywtsty:------------------------------------
-	/*x0(0, 0) = 5;
-	x0(1, 0) = 5;
-	s = 1;*/
-
-	//optT = HJ(ff2R, x0, s, alpha, epsilon, Nmax, ud1, ud2);
-	//cout << optT << endl;
-	//solution::clear_calls();
-}
+//void lab2()
+//{
+//	srand(time(NULL));
+//	matrix ud1, ud2;
+//	solution optT;
+//	double epsilon = 0.0001;
+//	double alpha = 0.5;
+//	int Nmax = 100;
+//	matrix x0(2, 1);
+//	matrix x(2, 1);
+//	x0(0, 0) = 0.5;  
+//	x0(1, 0) = 0.5;
+//	double s = 0.5;
+//	matrix Alpha(3.0);	// Alpha i beta do Rosenbrocka maj¹ byæ matrix
+//	matrix beta(0.5);
+//	int n = get_len(x0[0]);
+//	double tab[] = { 1.0, 1.0 };
+//	matrix S(n, tab);	// S - macierz pionowa, 1 kolumna, wype³niona liczbami 1.0
+//
+//
+//
+//
+//	//--------------Funkcja testowa celu zadanie:----------------------------
+//			//ofstream Sout("wyniki_lab_2.csv");
+//			//for (double krok = 0.4; krok < 1.5; krok += 0.5) {
+//			//	for (int i = 0; i < 100; i++) {
+//			//		x0(0, 0) = -1.0 + 2.0 * static_cast <double> (rand()) / static_cast <double> (RAND_MAX);
+//			//		x0(1, 0) = -1.0 + 2.0 * static_cast <double> (rand()) / static_cast <double> (RAND_MAX);
+//			//		optT = HJ(ff2T, x0, krok, alpha, epsilon, Nmax, ud1, ud2);
+//			//		x = optT.x;
+//			//		Sout << hcat(x0(0, 0), x0(1, 0));
+//			//		Sout << hcat(x(0, 0), x(1, 0));
+//			//		Sout << hcat(optT.y, optT.f_calls) ;
+//			//		//Zamieniæ wy¿sza linija na to przy dodaniu rosenbroka, bo /n rozpierdzieli 
+//			//		// b³edy bedzue calls dwa razy wypisany jak ostatnio
+//			//		//Sout << hcat(optT.f_calls, optT.f_calls);
+//			//		solution::clear_calls();
+//			//		S(0, 0) = krok;
+//			//		S(1, 0) = krok;
+//			//		
+//			//		//algorytm Rosenbroka
+//			//		optT = Rosen(ff2T, x0, S, Alpha, beta, epsilon, Nmax);
+//			//		x = optT.x;
+//			//		Sout << hcat(x(0, 0), x(1, 0));
+//			//		Sout << hcat(optT.y, optT.f_calls);
+//			//		Sout << "\n";
+//			//		solution::clear_calls();
+//
+//			//	}
+//			//	//Sout << "\n\n";
+//			//}
+//			//Sout.close();
+//			 
+//	//-------------przyadek do wykresu--------------------------------
+//				double krok = 0.6;
+//				S(0, 0) = krok;
+//				S(1, 0) = krok;
+//				optT = HJ(ff2T, x0, krok, alpha, epsilon, Nmax, ud1, ud2);
+//				cout << optT << endl;
+//				solution::clear_calls();
+//				optT = Rosen(ff2T, x0, S, Alpha, beta, epsilon, Nmax);
+//				cout << optT << endl;
+//				solution::clear_calls();
+//	//// losowe liczby double od -1 do 1
+//	//x0(0, 0) = -1.0 + 2.0 * static_cast <double> (rand()) / static_cast <double> (RAND_MAX);
+//	//x0(1, 0) = -1.0 + 2.0 * static_cast <double> (rand()) / static_cast <double> (RAND_MAX);
+//
+//
+//	matrix X0(2, 1);
+//	// losowe liczby double od -1 do 1
+//	X0(0, 0) = -1.0 + 2.0 * static_cast <double> (rand()) / static_cast <double> (RAND_MAX);
+//	X0(1, 0) = -1.0 + 2.0 * static_cast <double> (rand()) / static_cast <double> (RAND_MAX);
+//
+//	matrix Alpha(3.0);
+//	matrix beta(0.5);
+//	int n = get_len(X0[0]);
+//	double tab[] = { 1.0, 1.0 };
+//	matrix S(n, tab);
+//	cout << "S:\n" << S << endl;
+//
+//	cout << "Punkty poczatkowe:\n";
+//	cout << "x0: " << endl << X0 << endl << endl;
+//
+//	optT = Rosen(ff2T, X0, S, Alpha, beta, epsilon, Nmax);
+//	cout << optT << endl;
+//	solution::clear_calls();
+//
+//	//Problem rzeczywtsty:------------------------------------
+//	/*x0(0, 0) = 5;
+//	x0(1, 0) = 5;
+//	s = 1;*/
+//
+//	//optT = HJ(ff2R, x0, s, alpha, epsilon, Nmax, ud1, ud2);
+//	//cout << optT << endl;
+//	//solution::clear_calls();
+//}
 
 void lab3()
 {
 	matrix ud1, ud2;
 	solution optT;
+	double s = 1.0;	// ?
+	double alpha = 1.0;
+	double beta = 0.5;
+	double gamma = 2.0;
+	double delta = 0.5;
+	double epsilon = 0.0001;
+	int Nmax = 100;
+
+	matrix x0 = get_simplex(2);
+	optT = sym_NM(ff3T_2, x0, s, alpha, beta, gamma, delta, epsilon, Nmax, ud1, ud2);
+	cout << optT << endl;
+	solution::clear_calls();
 }
 
 void lab4()

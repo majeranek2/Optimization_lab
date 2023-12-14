@@ -500,8 +500,74 @@ solution sym_NM(matrix(*ff)(matrix, matrix, matrix), matrix x0, double s, double
 	try
 	{
 		solution Xopt;
-		//Tu wpisz kod funkcji
+		int n = get_size(x0)[0];	// n - liczba wymiarow
+		cout << "n = " << n << endl;
+		matrix p = x0;
+		double* ZERO = new double[n+1] {};
+		matrix values(n + 1, ZERO);
+		int pmin;	// do oznaczenia, który wierzcho³ek jest pmin
+		int pmax;
+		bool condition = true;	// czy przejsc do nastepnej iteracji?
+		int calls = 0;
 
+		while (condition) {
+			//condition = false;
+
+			// Obliczenie wartoœci w ka¿dym z wierzcho³ków simpleksu
+			for (int i = 0; i < n + 1; i++) {
+				values.set_row(ff(p[i], ud1, ud2), i);
+			}
+
+			// Ustalenie, które wierzcho³ki to pmax, a które to pmin
+			pmax = get_max(values, n);
+			pmin = get_min(values, n);
+
+			// Wyznaczanie œrodka ciê¿koœci simpleksu
+			matrix sum(n, ZERO);
+			for (int i = 0; i < n + 1; i++) {
+				if (i != pmax)
+					sum = sum + p[i];
+			}
+			matrix p_srodek = sum / n;
+			
+			// Proba odbicia
+			matrix p_odb = p_srodek + alpha * (p_srodek - p[pmax]);
+			cout << "P ODBITE:\n" << p_odb << endl;
+
+			if (ff(p_odb, ud1, ud2) < ff(p[pmin], ud1, ud2)) {
+				matrix p_e = p_srodek + gamma * (p_odb - p_srodek);
+				if (ff(p_e, ud1, ud2) < ff(p_odb, ud1, ud2))	// ekspansja
+					p[pmax] = p_e;
+				else	// odbicie
+					p[pmax] = p_odb;
+			}
+
+			else{
+				matrix p_z = p_srodek + beta * (p[pmax] - p_srodek);
+				if (ff(p_z, ud1, ud2) >= ff(p[pmax], ud1, ud2)) {
+					for (int i = 0; i < n + 1; i++) {
+						if (i != pmin)
+							p[i] = delta * (p[i] + p[pmin]);	// redukcja
+					}
+				}
+				else
+					p[pmax] = p_z;
+			}
+
+			// warunek stopu - czy poprawny? co z tym max?
+			/*for (int i = 0;  i < n + 1; i++) {
+				if (norm(pmin - p[i]) >= epsilon) {
+					condition = true;
+					break;
+				}
+			}*/
+			calls++;
+			if (calls > Nmax)
+				break;
+		}
+		Xopt.x = p[pmin];
+		Xopt.y = ff(Xopt.x, ud1, ud2)(0, 0);
+		Xopt.f_calls = calls;
 		return Xopt;
 	}
 	catch (string ex_info)
@@ -511,8 +577,41 @@ solution sym_NM(matrix(*ff)(matrix, matrix, matrix), matrix x0, double s, double
 }
 
 matrix get_simplex(int n) {
-
+	matrix simplex(n, n + 1, 0.0);
+	for (int i = 0; i < n; i++) {
+		simplex(i, i + 1) = 1.0;
+	}
+	return simplex;
 }
+
+int get_max(matrix p, int n) {
+	double val = p(0, 0);
+	matrix pmax(val);
+	int maxindex = 1;
+
+	for (int i = 1; i < n + 1; i++) {
+		if (get_row(p, i) > pmax) {
+			pmax = get_row(p, i);
+			maxindex = i;
+		}
+	}
+	return maxindex;
+}
+
+int get_min(matrix p, int n) {
+	double val = p(0, 0);
+	matrix pmin(val);
+	int minindex = 1;
+
+	for (int i = 1; i < n + 1; i++) {
+		if (get_row(p, i) < pmin) {
+			pmin = get_row(p, i);
+			minindex = i;
+		}
+	}
+	return minindex;
+}
+
 
 solution SD(matrix(*ff)(matrix, matrix, matrix), matrix(*gf)(matrix, matrix, matrix), matrix x0, double h0, double epsilon, int Nmax, matrix ud1, matrix ud2)
 {

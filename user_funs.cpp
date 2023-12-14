@@ -131,3 +131,10 @@ matrix df2(double t, matrix Y, matrix ud1, matrix ud2) {
 
 	return dY;
 }
+
+matrix ff3T_2(matrix x, matrix ud1, matrix ud2) {
+	matrix y;
+	//y = 2.5 * pow((x(0) * x(0) - x(1)), 2) + pow((1 - x(0)), 2);
+	y = pow(x(0,0), 2) + pow(x(1,0), 2);
+	return y;
+}
