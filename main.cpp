@@ -278,15 +278,23 @@ void lab3()
 {
 	matrix ud1, ud2;
 	solution optT;
-	double s = 1.0;	// ?
+	double s = 1.0;
 	double alpha = 1.0;
 	double beta = 0.5;
 	double gamma = 2.0;
 	double delta = 0.5;
-	double epsilon = 0.0001;
+	double epsilon = 0.001;
 	int Nmax = 100;
 
 	matrix x0 = get_simplex(2);
+	//double** tab = new double* [2]{	// przydatne gdyby chcieæ zacz¹æ z innego simpleksu
+	//	 /* new double[3]{-0.5, 0.5, -0.5},
+	//	  new double[3]{0.5, 0.5, 1.5}*/
+	//	 new double[3]{-0.5, -0.5, 0.5},
+	//	  new double[3]{1.0, 2.0, 1.0}
+	//};
+	//matrix x0(2, 3, tab);
+
 	optT = sym_NM(ff3T_2, x0, s, alpha, beta, gamma, delta, epsilon, Nmax, ud1, ud2);
 	cout << optT << endl;
 	solution::clear_calls();

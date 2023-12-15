@@ -134,7 +134,11 @@ matrix df2(double t, matrix Y, matrix ud1, matrix ud2) {
 
 matrix ff3T_2(matrix x, matrix ud1, matrix ud2) {
 	matrix y;
-	//y = 2.5 * pow((x(0) * x(0) - x(1)), 2) + pow((1 - x(0)), 2);
 	y = pow(x(0,0), 2) + pow(x(1,0), 2);
+	// z ksiazki 3.29
+	//y = pow(x(0, 0), 2) + pow(x(1, 0), 2) - ( (400.0 / ((100.0 * pow(x(0, 0), 2)) + pow(x(1, 0), 2) + 1.0)));
+
+	// z ksiazki 3.30
+	//y = 2.5 * pow(pow(x(0,0),2) - x(1,0), 2) + pow(1 - x(0, 0), 2);
 	return y;
 }
