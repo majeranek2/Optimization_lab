@@ -18,7 +18,8 @@ matrix getBase(int n);
 matrix Rosen_getQ(int n, matrix lambda, matrix d);
 matrix Rosen_getVj(int n, int j, matrix Q, matrix d);
 
-solution pen(matrix(*ff)(matrix, matrix, matrix), matrix x0, double c, double dc, double epsilon, int Nmax, matrix ud1 = NAN, matrix ud2 = NAN); // throw (string);
+//solution pen(matrix(*ff)(matrix, matrix, matrix), matrix x0, double c, double dc, double epsilon, int Nmax, matrix ud1 = NAN, matrix ud2 = NAN); // throw (string);
+solution pen(matrix(*ff)(matrix, matrix, matrix), matrix x0, matrix a, double alpha_pen, double s, double alpha, double beta, double gamma, double delta, double epsilon, int Nmax, matrix ud1 = NAN, matrix ud2 = NAN);
 solution sym_NM(matrix(*ff)(matrix, matrix, matrix), matrix x0, double s, double alpha, double beta, double gamma, double delta, double epsilon, int Nmax, matrix ud1 = NAN, matrix ud2 = NAN); // throw (string);
 matrix get_simplex(int n);
 int get_min(matrix p, int n);

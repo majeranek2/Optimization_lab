@@ -481,19 +481,19 @@ matrix Rosen_getVj(int n, int j, matrix Q, matrix d) {
 	}
 }
 
-solution pen(matrix(*ff)(matrix, matrix, matrix), matrix x0, double c, double dc, double epsilon, int Nmax, matrix ud1, matrix ud2)
-{
-	try {
-		solution Xopt;
-		//Tu wpisz kod funkcji
-
-		return Xopt;
-	}
-	catch (string ex_info)
-	{
-		throw ("solution pen(...):\n" + ex_info);
-	}
-}
+//solution pen(matrix(*ff)(matrix, matrix, matrix), matrix x0, double c, double dc, double epsilon, int Nmax, matrix ud1, matrix ud2)
+//{
+//	try {
+//		solution Xopt;
+//		//Tu wpisz kod funkcji
+//
+//		return Xopt;
+//	}
+//	catch (string ex_info)
+//	{
+//		throw ("solution pen(...):\n" + ex_info);
+//	}
+//}
 
 solution sym_NM(matrix(*ff)(matrix, matrix, matrix), matrix x0, double s, double alpha, double beta, double gamma, double delta, double epsilon, int Nmax, matrix ud1, matrix ud2)
 {
@@ -501,7 +501,7 @@ solution sym_NM(matrix(*ff)(matrix, matrix, matrix), matrix x0, double s, double
 	{
 		solution Xopt;
 		int n = get_size(x0)[0];	// n - liczba wymiarow
-		cout << "n = " << n << endl;
+		//cout << "n = " << n << endl;
 		matrix p = x0;
 		p = s * p;
 
@@ -536,40 +536,40 @@ solution sym_NM(matrix(*ff)(matrix, matrix, matrix), matrix x0, double s, double
 			matrix p_odb = p_srodek + alpha * (p_srodek - p[pmax]);
 
 			// ~~ DEBUG ~~
-			cout << "========= ITERACJA " << iter << " =========\n";
+			/*cout << "========= ITERACJA " << iter << " =========\n";
 			cout << "P:\n" << p << endl << endl;
 			cout << "Values:\n" << values << endl << endl;
 			cout << "Pmin - indeks " << pmin << "\n" << p[pmin] << endl << endl;
 			cout << "Pmax - indeks " << pmax << "\n" << p[pmax] << endl << endl;
 			cout << "P srodek:\n" << p_srodek << endl << endl;
-			cout << "P odbicia:\n" << p_odb << endl << endl;
+			cout << "P odbicia:\n" << p_odb << endl << endl;*/
 
 			// ~~ DEBUG ~~
 
 			if (ff(p_odb, ud1, ud2) < ff(p[pmin], ud1, ud2)) {
-				cout << "f(p_odb) < f(pmin)!\n";
+				//cout << "f(p_odb) < f(pmin)!\n";
 				matrix p_e = p_srodek + gamma * (p_odb - p_srodek);
-				cout << "p_e:\n" << p_e << endl << endl;
+				//cout << "p_e:\n" << p_e << endl << endl;
 				if (ff(p_e, ud1, ud2) < ff(p_odb, ud1, ud2)) {	// ekspansja
-					cout << "Ekspansja!\n";
+					//cout << "Ekspansja!\n";
 					p.set_col(p_e, pmax);
 				}
 				else {	// odbicie
-					cout << "Odbicie!\n";
+					//cout << "Odbicie!\n";
 					p.set_col(p_odb, pmax);
 				}
 			}
 
 			else {
 				if (ff(p[pmin], ud1, ud2) <= ff(p_odb, ud1, ud2) && ff(p_odb, ud1, ud2) < ff(p[pmax], ud1, ud2)) {
-					cout << "f(pmin) <= f(p_odb) < f(pmax)!\n";
+					//cout << "f(pmin) <= f(p_odb) < f(pmax)!\n";
 					p.set_col(p_odb, pmax);
 				}
 				else {
 					matrix p_z = p_srodek + beta * (p[pmax] - p_srodek);
-					cout << "p_z:\n" << p_z << endl << endl;
+					//cout << "p_z:\n" << p_z << endl << endl;
 					if (ff(p_z, ud1, ud2) >= ff(p[pmax], ud1, ud2)) {
-						cout << "f(p_z) >= f(pmax)!\n";
+						//cout << "f(p_z) >= f(pmax)!\n";
 						for (int i = 0; i < n + 1; i++) {
 							if (i != pmin) {
 								matrix temp = delta * (p[i] + p[pmin]);	// redukcja
@@ -578,7 +578,7 @@ solution sym_NM(matrix(*ff)(matrix, matrix, matrix), matrix x0, double s, double
 						}
 					}
 					else {
-						cout << "f(p_z) < f(pmax)!\n";
+						//cout << "f(p_z) < f(pmax)!\n";
 						p.set_col(p_z, pmax);
 					}
 				}
@@ -595,7 +595,7 @@ solution sym_NM(matrix(*ff)(matrix, matrix, matrix), matrix x0, double s, double
 				}
 			}
 			if (condition == false) {
-				cout << "Zbieznosc uzyskana po " << iter << " iteracjach!\n";
+				//cout << "Zbieznosc uzyskana po " << iter << " iteracjach!\n";
 			}
 		}
 		Xopt.x = p[pmin];
@@ -606,6 +606,46 @@ solution sym_NM(matrix(*ff)(matrix, matrix, matrix), matrix x0, double s, double
 	catch (string ex_info)
 	{
 		throw ("solution sym_NM(...):\n" + ex_info);
+	}
+}
+solution pen(matrix(*ff)(matrix, matrix, matrix), matrix x0, matrix a, double alpha_pen, double s, double alpha, double beta, double gamma, double delta, double epsilon, int Nmax, matrix ud1, matrix ud2)
+{
+	try {
+		solution Xopt;
+		solution Xtemp;
+		int i = 0;
+		matrix p = x0;	// simpleks 2x3
+		matrix x_before(2, 1, 0.0);
+		matrix c(Nmax+2,1, 0.0);
+		matrix x(2, 1, 0.0);
+	
+		//cout << "PRINTING C...\n" << c << "\n";
+
+		do {
+			i++;
+			// W KAZDEJ KOLEJNEJ ITERACJI PRZEKAZUJ DALEJ ZMODYFIKOWANY SIMPLEKS
+			// TERAZ SIE TAK NIE DZIEJE
+			Xtemp = sym_NM(F_zewn, p, s, alpha, beta, gamma, delta, epsilon, Nmax, get_row(c, i), a);
+			if (i > 1)
+				x_before = x;
+			x = Xtemp.x;
+			c.set_row(alpha_pen * get_row(c, i - 1), i);
+			cout << "\nIteracja nr " << i << "...\n";
+			cout << "X_before: \n" << x_before << endl;
+			cout << "X : \n" << x << endl;
+			cout << "Norm: " << norm(x - x_before) << endl;
+			if (i > Nmax)
+				break;
+		} while (norm(x - x_before) >= epsilon);
+		Xopt.x = x;
+		Xopt.y = ff3T(Xopt.x, ud1, ud2)(0, 0);
+		Xopt.f_calls = i;
+		return Xopt;
+	}
+
+	catch (string ex_info)
+	{
+		throw ("solution pen(...):\n" + ex_info);
 	}
 }
 

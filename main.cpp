@@ -283,19 +283,22 @@ void lab3()
 	double beta = 0.5;
 	double gamma = 2.0;
 	double delta = 0.5;
-	double epsilon = 0.001;
+	double epsilon = 0.0001;
 	int Nmax = 100;
+	matrix a(1.0);
+	double alpha_pen = 2.0;
 
-	matrix x0 = get_simplex(2);
-	//double** tab = new double* [2]{	// przydatne gdyby chcieæ zacz¹æ z innego simpleksu
-	//	 /* new double[3]{-0.5, 0.5, -0.5},
-	//	  new double[3]{0.5, 0.5, 1.5}*/
-	//	 new double[3]{-0.5, -0.5, 0.5},
-	//	  new double[3]{1.0, 2.0, 1.0}
-	//};
-	//matrix x0(2, 3, tab);
+	//matrix x0 = get_simplex(2);
+	double** tab = new double* [2]{	// przydatne gdyby chcieæ zacz¹æ z innego simpleksu
+		/* new double[3]{4.0, 5.0, 3.0},
+		 new double[3]{2.0, 5.0, 5.0}*/
+		 new double[3]{2.0, 4.0, 3.0},
+		 new double[3]{2.0, 3.0, 4.0}
+	};
+	matrix x0(2, 3, tab);
 
-	optT = sym_NM(ff3T_2, x0, s, alpha, beta, gamma, delta, epsilon, Nmax, ud1, ud2);
+	//optT = sym_NM(ff3T_2, x0, s, alpha, beta, gamma, delta, epsilon, Nmax, ud1, ud2);
+	optT = pen(F_zewn, x0, a, alpha_pen, s, alpha, beta, gamma, delta, epsilon, Nmax, ud1, ud2);
 	cout << optT << endl;
 	solution::clear_calls();
 }

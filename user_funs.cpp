@@ -142,3 +142,43 @@ matrix ff3T_2(matrix x, matrix ud1, matrix ud2) {
 	//y = 2.5 * pow(pow(x(0,0),2) - x(1,0), 2) + pow(1 - x(0, 0), 2);
 	return y;
 }
+
+matrix ff3T(matrix x, matrix ud1, matrix ud2) {
+	matrix y;
+	y = sin(M_PI * sqrt(pow(x(0, 0) / M_PI, 2) + pow(x(1, 0) / M_PI, 2)))
+		/ M_PI * sqrt(pow(x(0, 0) / M_PI, 2) + pow(x(1, 0) / M_PI, 2));
+	return y;
+}
+
+matrix g1(matrix x, matrix ud1, matrix ud2) {
+	matrix y;
+	y = -(x(0, 0)) + 1;
+	return y;
+}
+
+matrix g2(matrix x, matrix ud1, matrix ud2) {
+	matrix y;
+	y = -(x(1, 0)) + 1;
+	return y;
+}
+
+matrix g3(matrix x, matrix a, matrix ud1, matrix ud2) {
+	matrix y;
+	y = sqrt(pow(x(0, 0), 2) + pow(x(1, 0), 2)) - a;
+	return y;
+}
+
+matrix S(matrix x, matrix a, matrix ud1, matrix ud2) {
+	matrix y;
+	matrix ZERO(0.0);
+	y = pow(max(ZERO, g1(x)), 2) +
+		pow(max(ZERO, g2(x)), 2) +
+		pow(max(ZERO, g3(x, a)), 2);
+	return y;
+}
+
+matrix F_zewn(matrix x, matrix ud1, matrix ud2) { // ud1: c[i], ud2: a
+	matrix y;
+	y = ff3T(x) + ud1 * S(x, ud2);
+	return y;
+}
