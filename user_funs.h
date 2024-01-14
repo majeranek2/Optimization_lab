@@ -27,3 +27,7 @@ matrix g3(matrix x, matrix a, matrix ud1 = NAN, matrix ud2 = NAN);
 matrix S(matrix x, matrix a, matrix ud1 = NAN, matrix ud2 = NAN);
 matrix F_zewn(matrix x, matrix ud1 = NAN, matrix ud2 = NAN);
 
+//LAB 4
+matrix ff4T(matrix x, matrix ud1 = NAN, matrix ud2 = NAN);
+matrix ff4R(matrix x, matrix ud1, matrix ud2);
+matrix gf4(matrix x, matrix ud1, matrix ud2);

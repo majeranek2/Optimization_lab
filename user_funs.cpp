@@ -152,13 +152,13 @@ matrix ff3T(matrix x, matrix ud1, matrix ud2) {
 
 matrix g1(matrix x, matrix ud1, matrix ud2) {
 	matrix y;
-	y = -(x(0, 0)) + 1;
+	y = (x(0, 0)) + 1;
 	return y;
 }
 
 matrix g2(matrix x, matrix ud1, matrix ud2) {
 	matrix y;
-	y = -(x(1, 0)) + 1;
+	y = (x(1, 0)) + 1;
 	return y;
 }
 
@@ -180,5 +180,97 @@ matrix S(matrix x, matrix a, matrix ud1, matrix ud2) {
 matrix F_zewn(matrix x, matrix ud1, matrix ud2) { // ud1: c[i], ud2: a
 	matrix y;
 	y = ff3T(x) + ud1 * S(x, ud2);
+	//cout << "ud1:\n" << ud1 << "\n";
+	//cout << "ud2:\n" << ud2 << "\n";
 	return y;
+}
+
+//lab 4
+matrix ff4T(matrix x, matrix ud1, matrix ud2) {
+	matrix y;
+	y = pow((x(0) + 2 * x(1) - 7), 2) + pow((2 * x(0) + x(1) - 5), 2);
+	return y;
+}
+
+
+matrix ff4R(matrix x, matrix ud1, matrix ud2) {
+	matrix y;
+	int m = 100;	//liczba danych
+	int n = get_len(x);		//liczba współrzędnych wektora gradientu
+	static matrix X(n, m), Y(1, m);
+
+	//wczytanie danych z pliku
+	static bool pomm = true;
+	if (pomm) {
+		std::ifstream plik("XData.txt");
+		if (!plik.is_open()) {
+			std::cerr << "Error XData.txt" << std::endl;
+			return 0;
+		}
+		plik >> X;
+		plik.close();
+
+		plik.open("YData.txt");
+		if (!plik.is_open()) {
+			std::cerr << "Error YData.txt" << std::endl;
+			return 0;
+		}
+		plik >> Y;
+		plik.close();
+
+		pomm = false;
+	}
+
+	double h, pom;
+	for (int i = 0; i < m; i++) {
+		pom = (trans(x) * X[i])(); //wktor ztransponowany z paramtrami klasyfiktora * wktor ocen 
+		h = 1.0 / (1.0 + exp(-pom));
+		y = y - Y(0, i) * log(h) - (1 - Y(0, i)) * log(1 - h);
+	}
+
+	y = y / m;
+	return y;
+}
+
+
+
+
+
+matrix gf4(matrix x, matrix ud1, matrix ud2) {
+	int m = 100;	//liczba danych	
+	int n = get_len(x);//liczba współrzędnych wektora gradientu
+	matrix g(n, 1);
+	static matrix X(n, m), Y(1, m);
+
+	//wczytanie danych z pliku
+	static bool pomm = true;
+	if (pomm) {
+		std::ifstream plik("XData.txt");
+		if (!plik.is_open()) {
+			std::cerr << "Error XData.txt" << std::endl;
+			return 0;
+		}
+		plik >> X;
+		plik.close();
+
+		plik.open("YData.txt");
+		if (!plik.is_open()) {
+			std::cerr << "Error YData.txt" << std::endl;
+			return 0;
+		}
+		plik >> Y;
+		plik.close();
+
+		pomm = false;
+	}
+	double h, pom;
+	for (int j = 0; j < n; j++) {
+		for (int i = 0; i < m; i++) {
+			pom = (trans(x) * X[i])();
+			h = 1.0 / (1.0 + exp(-pom));
+			g(j) = g(j) + X(j, i) * (h - Y(0, i));
+		}
+		g(j) = g(j) / m;
+	}
+	return g;
 }
