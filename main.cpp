@@ -285,7 +285,7 @@ void lab3()
 	double delta = 0.5;
 	double epsilon = 0.0001;
 	int Nmax = 100;
-	matrix a(1.0);
+	matrix a(5.0);
 	double alpha_pen = 2.0;
 
 	//matrix x0 = get_simplex(2);

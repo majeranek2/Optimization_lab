@@ -152,13 +152,13 @@ matrix ff3T(matrix x, matrix ud1, matrix ud2) {
 
 matrix g1(matrix x, matrix ud1, matrix ud2) {
 	matrix y;
-	y = -(x(0, 0)) + 1;
+	y = (x(0, 0)) + 1;
 	return y;
 }
 
 matrix g2(matrix x, matrix ud1, matrix ud2) {
 	matrix y;
-	y = -(x(1, 0)) + 1;
+	y = (x(1, 0)) + 1;
 	return y;
 }
 
@@ -180,5 +180,7 @@ matrix S(matrix x, matrix a, matrix ud1, matrix ud2) {
 matrix F_zewn(matrix x, matrix ud1, matrix ud2) { // ud1: c[i], ud2: a
 	matrix y;
 	y = ff3T(x) + ud1 * S(x, ud2);
+	//cout << "ud1:\n" << ud1 << "\n";
+	//cout << "ud2:\n" << ud2 << "\n";
 	return y;
 }

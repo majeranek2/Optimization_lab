@@ -601,6 +601,7 @@ solution sym_NM(matrix(*ff)(matrix, matrix, matrix), matrix x0, double s, double
 		Xopt.x = p[pmin];
 		Xopt.y = ff(Xopt.x, ud1, ud2)(0, 0);
 		Xopt.f_calls = iter;
+		Xopt.ud = p;
 		return Xopt;
 	}
 	catch (string ex_info)
@@ -617,14 +618,17 @@ solution pen(matrix(*ff)(matrix, matrix, matrix), matrix x0, matrix a, double al
 		matrix p = x0;	// simpleks 2x3
 		matrix x_before(2, 1, 0.0);
 		matrix c(Nmax+2,1, 0.0);
+		matrix ONE(1.0);
+		c.set_row(ONE, 0);
+		for (int i = 1; i < Nmax + 1; i++) {
+			c.set_row(alpha_pen * get_row(c, i - 1), i);
+		}
+		//cout << c << endl;
 		matrix x(2, 1, 0.0);
 	
-		//cout << "PRINTING C...\n" << c << "\n";
 
 		do {
 			i++;
-			// W KAZDEJ KOLEJNEJ ITERACJI PRZEKAZUJ DALEJ ZMODYFIKOWANY SIMPLEKS
-			// TERAZ SIE TAK NIE DZIEJE
 			Xtemp = sym_NM(F_zewn, p, s, alpha, beta, gamma, delta, epsilon, Nmax, get_row(c, i), a);
 			if (i > 1)
 				x_before = x;
@@ -634,6 +638,8 @@ solution pen(matrix(*ff)(matrix, matrix, matrix), matrix x0, matrix a, double al
 			cout << "X_before: \n" << x_before << endl;
 			cout << "X : \n" << x << endl;
 			cout << "Norm: " << norm(x - x_before) << endl;
+			p = Xtemp.ud;
+			cout << "PRINTING P...\n" << p << endl;
 			if (i > Nmax)
 				break;
 		} while (norm(x - x_before) >= epsilon);
