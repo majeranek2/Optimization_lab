@@ -150,6 +150,72 @@ matrix ff3T(matrix x, matrix ud1, matrix ud2) {
 	return y;
 }
 
+double licz(double v0x, double omg) 
+{
+	double x = 0;
+	double vx = v0x;
+	double vy = 0;
+	double x_prev = 0;
+	double m = 0.6;	//kg = 600 g
+	double r = 0.12;	//m=12 cm
+	double y0 = 100;	//m
+	double S = M_PI * r * r;
+	double ro = 1.2;	//kg/m3
+	double C = 0.47;
+	double t0 = 0;
+	double dt = 0.01;
+	double tk = 7; 
+	double g = 9.89;
+	double y, ax, ay;
+
+	while (abs(x - x_prev) >= 1e-6)
+	{
+		x += vx * dt;
+		y = y0 - vy * dt;
+		ax = (-0.5 * C * ro * S * vx * vx + ro * vy + omg* M_PI * r ^3) / m;
+		ay = (-m * g - 0.5 * C * ro * S * vy * vy - ro * vx - omg* M_PI * r^3) / m;
+		vx += ax * dt;
+		vy += ay * dt;
+		if (abs(x - x_prev) < 1e-6) {
+			break;
+		}
+		x_prev = x;
+	}
+	return x;
+
+}
+double znajdz()
+{
+	double max_xend = 0;
+	double best_v0x = 0;
+	double best_omega = 0;
+	double xend;
+
+	for (int v0x = -10; v0x < 11; v0x++) {
+		for (int omega = -23; omega < 24; omega++) {
+			xend = licz(v0x, omega);
+			if (4 <= xend <= 6 && abs(xend - 5) < abs(max_xend - 5)) {
+				max_xend = xend;
+				best_v0x = v0x;
+				best_omega = omega;
+				return max_xend, best_v0x, best_omega;
+
+				
+			}
+		}
+	}
+	return max_xend, best_v0x, best_omega;
+}
+
+
+matrix ff3R(matrix x, matrix ud1, matrix ud2)
+{
+	double max_xend = 0;
+	double best_v0x = 0;
+	double best_omega = 0;
+	max_xend, best_v0x, best_omega = znajdz();
+
+}
 matrix g1(matrix x, matrix ud1, matrix ud2) {
 	matrix y;
 	y = (x(0, 0)) + 1;
