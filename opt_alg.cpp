@@ -495,170 +495,299 @@ matrix Rosen_getVj(int n, int j, matrix Q, matrix d) {
 //	}
 //}
 
-solution sym_NM(matrix(*ff)(matrix, matrix, matrix), matrix x0, double s, double alpha, double beta, double gamma, double delta, double epsilon, int Nmax, matrix ud1, matrix ud2)
-{
-	try
-	{
-		solution Xopt;
-		int n = get_size(x0)[0];	// n - liczba wymiarow
-		//cout << "n = " << n << endl;
-		matrix p = x0;
-		p = s * p;
+//solution sym_NM(matrix(*ff)(matrix, matrix, matrix), matrix x0, double s, double alpha, double beta, double gamma, double delta, double epsilon, int Nmax, matrix ud1, matrix ud2)
+//{
+//	try
+//	{
+//		solution Xopt;
+//		int n = get_size(x0)[0];	// n - liczba wymiarow
+//		matrix p = get_simplex(n, s);
+//		p.set_col(x0, 0);
+//	
+//		double* ZERO = new double[n+1] {};
+//		matrix values(n + 1, ZERO);
+//		int pmin;	// do oznaczenia, który wierzcho³ek jest pmin
+//		int pmax;
+//		bool condition = true;	// czy przejsc do nastepnej iteracji?
+//		int iter = 0;
+//
+//		while (condition) {
+//			condition = false;
+//			// Obliczenie wartoœci w ka¿dym z wierzcho³ków simpleksu
+//			for (int i = 0; i < n + 1; i++) {
+//				values.set_row(ff(p[i], ud1, ud2), i);
+//			}
+//
+//			// Ustalenie, które wierzcho³ki to pmax, a które to pmin
+//			pmin = get_min(values, n);
+//			pmax = get_max(values, n, pmin);
+//			
+//
+//			// Wyznaczanie œrodka ciê¿koœci simpleksu
+//			matrix sum(n, ZERO);
+//			for (int i = 0; i < n + 1; i++) {
+//				if (i != pmax)
+//					sum = sum + p[i];
+//			}
+//			matrix p_srodek = sum / n;
+//			
+//			// Proba odbicia
+//			matrix p_odb = p_srodek + alpha * (p_srodek - p[pmax]);
+//
+//			// ~~ DEBUG ~~
+//			/*cout << "========= ITERACJA " << iter << " =========\n";
+//			cout << "P:\n" << p << endl << endl;
+//			cout << "Values:\n" << values << endl << endl;
+//			cout << "Pmin - indeks " << pmin << "\n" << p[pmin] << endl << endl;
+//			cout << "Pmax - indeks " << pmax << "\n" << p[pmax] << endl << endl;
+//			cout << "P srodek:\n" << p_srodek << endl << endl;
+//			cout << "P odbicia:\n" << p_odb << endl << endl;*/
+//
+//			// ~~ DEBUG ~~
+//
+//			if (ff(p_odb, ud1, ud2) < ff(p[pmin], ud1, ud2)) {
+//				//cout << "f(p_odb) < f(pmin)!\n";
+//				matrix p_e = p_srodek + gamma * (p_odb - p_srodek);
+//				//cout << "p_e:\n" << p_e << endl << endl;
+//				if (ff(p_e, ud1, ud2) < ff(p_odb, ud1, ud2)) {	// ekspansja
+//					//cout << "Ekspansja!\n";
+//					p.set_col(p_e, pmax);
+//				}
+//				else {	// odbicie
+//					//cout << "Odbicie!\n";
+//					p.set_col(p_odb, pmax);
+//				}
+//			}
+//
+//			else {
+//				if (ff(p[pmin], ud1, ud2) <= ff(p_odb, ud1, ud2) && ff(p_odb, ud1, ud2) < ff(p[pmax], ud1, ud2)) {
+//					//cout << "f(pmin) <= f(p_odb) < f(pmax)!\n";
+//					p.set_col(p_odb, pmax);
+//				}
+//				else {
+//					matrix p_z = p_srodek + beta * (p[pmax] - p_srodek);
+//					//cout << "p_z:\n" << p_z << endl << endl;
+//					if (ff(p_z, ud1, ud2) >= ff(p[pmax], ud1, ud2)) {
+//						//cout << "f(p_z) >= f(pmax)!\n";
+//						for (int i = 0; i < n + 1; i++) {
+//							if (i != pmin) {
+//								matrix temp = delta * (p[i] + p[pmin]);	// redukcja
+//								p.set_col(temp, i);
+//							}
+//						}
+//					}
+//					else {
+//						//cout << "f(p_z) < f(pmax)!\n";
+//						p.set_col(p_z, pmax);
+//					}
+//				}
+//			}
+//
+//			iter++;
+//			if (iter > Nmax)
+//				break;
+//
+//			// Warunek stopu
+//			for (int i = 0; i < n + 1; i++) {
+//				if (norm(p[pmin] - p[i]) >= epsilon) {
+//					condition = true;
+//				}
+//			}
+//			if (condition == false) {
+//				//cout << "Zbieznosc uzyskana po " << iter << " iteracjach!\n";
+//			}
+//		}
+//		Xopt.x = p[pmin];
+//		Xopt.y = ff(Xopt.x, ud1, ud2)(0, 0);
+//		Xopt.f_calls = iter;
+//		Xopt.ud = p;
+//		return Xopt;
+//	}
+//	catch (string ex_info)
+//	{
+//		throw ("solution sym_NM(...):\n" + ex_info);
+//	}
+//}
+//solution pen(matrix(*ff)(matrix, matrix, matrix), matrix x0, matrix a, double alpha_pen, double s, double alpha, double beta, double gamma, double delta, double epsilon, int Nmax, matrix ud1, matrix ud2)
+//{
+//	try {
+//		matrix X = x0;
+//		matrix X1;
+//		solution X_;
+//		solution X_1;
+//		X_.x = x0[0];
+//		matrix a(5.0);
+//		matrix c(2.0);
+//		while (true) {
+//			X_1 = sym_NM(ff, X, s, alpha, beta, gamma, delta, epsilon, Nmax, a, c);
+//			if (norm(X_1.x - X_.x) < epsilon || solution::f_calls > Nmax)
+//				return X_1;
+//			c(0) = 2.0 * c(0);
+//			X = X_1.ud;
+//			cout << "X:\n" << X << endl;
+//			X_ = X_1;
+//		}
+//		return X_;
+//		//solution Xopt;
+//		//solution Xtemp;
+//		//int i = 0;
+//		//matrix p = x0;	// simpleks 2x3
+//		//matrix x_before(2, 1, 0.0);
+//		//matrix c(Nmax+2,1, 0.0);
+//		//matrix ONE(1.0);
+//		//c.set_row(ONE, 0);
+//		//for (int i = 1; i < Nmax + 1; i++) {
+//		//	c.set_row(alpha_pen * get_row(c, i - 1), i);
+//		//}
+//		////cout << c << endl;
+//		//matrix x(2, 1, 0.0);
+//	
+//
+//		//do {
+//		//	i++;
+//		//	Xtemp = sym_NM(F_zewn, p, s, alpha, beta, gamma, delta, epsilon, Nmax, get_row(c, i), a);
+//		//	if (i > 1)
+//		//		x_before = x;
+//		//	x = Xtemp.x;
+//		//	c.set_row(alpha_pen * get_row(c, i - 1), i);
+//		//	cout << "\nIteracja nr " << i << "...\n";
+//		//	cout << "X_before: \n" << x_before << endl;
+//		//	cout << "X : \n" << x << endl;
+//		//	cout << "Norm: " << norm(x - x_before) << endl;
+//		//	p = Xtemp.ud;
+//		//	cout << "PRINTING P...\n" << p << endl;
+//		//	if (i > Nmax)
+//		//		break;
+//		//} while (norm(x - x_before) >= epsilon);
+//		//Xopt.x = x;
+//		//Xopt.y = ff3T(Xopt.x, ud1, ud2)(0, 0);
+//		//Xopt.f_calls = i;
+//		//return Xopt;
+//	}
+//
+//	catch (string ex_info)
+//	{
+//		throw ("solution pen(...):\n" + ex_info);
+//	}
+//}
 
-		double* ZERO = new double[n+1] {};
-		matrix values(n + 1, ZERO);
-		int pmin;	// do oznaczenia, który wierzcho³ek jest pmin
-		int pmax;
-		bool condition = true;	// czy przejsc do nastepnej iteracji?
-		int iter = 0;
-
-		while (condition) {
-			condition = false;
-			// Obliczenie wartoœci w ka¿dym z wierzcho³ków simpleksu
-			for (int i = 0; i < n + 1; i++) {
-				values.set_row(ff(p[i], ud1, ud2), i);
-			}
-
-			// Ustalenie, które wierzcho³ki to pmax, a które to pmin
-			pmin = get_min(values, n);
-			pmax = get_max(values, n, pmin);
-			
-
-			// Wyznaczanie œrodka ciê¿koœci simpleksu
-			matrix sum(n, ZERO);
-			for (int i = 0; i < n + 1; i++) {
-				if (i != pmax)
-					sum = sum + p[i];
-			}
-			matrix p_srodek = sum / n;
-			
-			// Proba odbicia
-			matrix p_odb = p_srodek + alpha * (p_srodek - p[pmax]);
-
-			// ~~ DEBUG ~~
-			/*cout << "========= ITERACJA " << iter << " =========\n";
-			cout << "P:\n" << p << endl << endl;
-			cout << "Values:\n" << values << endl << endl;
-			cout << "Pmin - indeks " << pmin << "\n" << p[pmin] << endl << endl;
-			cout << "Pmax - indeks " << pmax << "\n" << p[pmax] << endl << endl;
-			cout << "P srodek:\n" << p_srodek << endl << endl;
-			cout << "P odbicia:\n" << p_odb << endl << endl;*/
-
-			// ~~ DEBUG ~~
-
-			if (ff(p_odb, ud1, ud2) < ff(p[pmin], ud1, ud2)) {
-				//cout << "f(p_odb) < f(pmin)!\n";
-				matrix p_e = p_srodek + gamma * (p_odb - p_srodek);
-				//cout << "p_e:\n" << p_e << endl << endl;
-				if (ff(p_e, ud1, ud2) < ff(p_odb, ud1, ud2)) {	// ekspansja
-					//cout << "Ekspansja!\n";
-					p.set_col(p_e, pmax);
-				}
-				else {	// odbicie
-					//cout << "Odbicie!\n";
-					p.set_col(p_odb, pmax);
-				}
-			}
-
-			else {
-				if (ff(p[pmin], ud1, ud2) <= ff(p_odb, ud1, ud2) && ff(p_odb, ud1, ud2) < ff(p[pmax], ud1, ud2)) {
-					//cout << "f(pmin) <= f(p_odb) < f(pmax)!\n";
-					p.set_col(p_odb, pmax);
-				}
-				else {
-					matrix p_z = p_srodek + beta * (p[pmax] - p_srodek);
-					//cout << "p_z:\n" << p_z << endl << endl;
-					if (ff(p_z, ud1, ud2) >= ff(p[pmax], ud1, ud2)) {
-						//cout << "f(p_z) >= f(pmax)!\n";
-						for (int i = 0; i < n + 1; i++) {
-							if (i != pmin) {
-								matrix temp = delta * (p[i] + p[pmin]);	// redukcja
-								p.set_col(temp, i);
-							}
-						}
-					}
-					else {
-						//cout << "f(p_z) < f(pmax)!\n";
-						p.set_col(p_z, pmax);
-					}
-				}
-			}
-
-			iter++;
-			if (iter > Nmax)
-				break;
-
-			// Warunek stopu
-			for (int i = 0; i < n + 1; i++) {
-				if (norm(p[pmin] - p[i]) >= epsilon) {
-					condition = true;
-				}
-			}
-			if (condition == false) {
-				//cout << "Zbieznosc uzyskana po " << iter << " iteracjach!\n";
-			}
-		}
-		Xopt.x = p[pmin];
-		Xopt.y = ff(Xopt.x, ud1, ud2)(0, 0);
-		Xopt.f_calls = iter;
-		Xopt.ud = p;
-		return Xopt;
-	}
-	catch (string ex_info)
-	{
-		throw ("solution sym_NM(...):\n" + ex_info);
-	}
-}
-solution pen(matrix(*ff)(matrix, matrix, matrix), matrix x0, matrix a, double alpha_pen, double s, double alpha, double beta, double gamma, double delta, double epsilon, int Nmax, matrix ud1, matrix ud2)
-{
+solution sym_NM(matrix(*ff)(matrix, matrix, matrix), matrix x0, double s, double alpha, double beta, double gamma, double delta, double epsilon, int Nmax, matrix ud1, matrix ud2) {
 	try {
-		solution Xopt;
-		solution Xtemp;
-		int i = 0;
-		matrix p = x0;	// simpleks 2x3
-		matrix x_before(2, 1, 0.0);
-		matrix c(Nmax+2,1, 0.0);
-		matrix ONE(1.0);
-		c.set_row(ONE, 0);
-		for (int i = 1; i < Nmax + 1; i++) {
-			c.set_row(alpha_pen * get_row(c, i - 1), i);
+		int n = get_len(x0);
+		int n_ = n + 1;
+		solution p_odb, p_e, p_z; 
+		matrix p_dash; // sr ciezkosci
+		solution* symp = new solution[n_];	
+		// sympleks:
+		//		S0		   S1		   S2	  
+		//	[x1, x2	x1, x2	x1, x2 ]
+		//	[   y0			y1			y2	  ]
+		symp[0].x = x0;
+		symp[0].fit_fun(ff, ud1, ud2);		// umiesc y0, y1, y2
+		matrix e = ident_mat(n);	// e - wersor
+		for (int i = 1; i < n_; ++i) {
+			symp[i].x = symp[0].x + s * e[i - 1];	// stworz reszte poczatkowego sympleksu
+			symp[i].fit_fun(ff, ud1, ud2);
 		}
-		//cout << c << endl;
-		matrix x(2, 1, 0.0);
-	
+		
+		int min, max; //ozn ktory wierzcholek jest p_max i ktory p_min
+		while (1) {
+			min = 0;
+			max = 0;
+			for (int i = 1; i < n_; ++i) {
+				if (symp[min].y > symp[i].y)
+					min = i;
+				if (symp[max].y < symp[i].y)
+					max = i;
+			}
 
-		do {
-			i++;
-			Xtemp = sym_NM(F_zewn, p, s, alpha, beta, gamma, delta, epsilon, Nmax, get_row(c, i), a);
-			if (i > 1)
-				x_before = x;
-			x = Xtemp.x;
-			c.set_row(alpha_pen * get_row(c, i - 1), i);
-			cout << "\nIteracja nr " << i << "...\n";
-			cout << "X_before: \n" << x_before << endl;
-			cout << "X : \n" << x << endl;
-			cout << "Norm: " << norm(x - x_before) << endl;
-			p = Xtemp.ud;
-			cout << "PRINTING P...\n" << p << endl;
-			if (i > Nmax)
-				break;
-		} while (norm(x - x_before) >= epsilon);
-		Xopt.x = x;
-		Xopt.y = ff3T(Xopt.x, ud1, ud2)(0, 0);
-		Xopt.f_calls = i;
-		return Xopt;
+			matrix p_dash(n, 1);
+			for (int i = 0; i < n_; ++i)	// oblicz srodek ciezkosci
+				if (i != max)
+					p_dash = p_dash + symp[i].x;
+			p_dash = p_dash / n;
+
+			p_odb.x = p_dash + alpha * (p_dash - symp[max].x);		// oblicz p_odb
+			p_odb.fit_fun(ff, ud1, ud2);
+
+			if (p_odb.y < symp[min].y) {
+				p_e.x = p_dash + gamma * (p_e.x - p_dash);
+				p_e.fit_fun(ff, ud1, ud2);
+				if (p_e.y < symp[max].y)
+					symp[max] = p_e;		// wykonaj ekspansje
+				else
+					symp[max] = p_odb;			// wykonaj odbicie
+			}
+
+			else if (symp[min].y <= p_odb.y && p_odb.y < symp[max].y)
+				symp[max] = p_odb;
+
+			else
+			{
+				p_z.x = p_dash + beta * (symp[max].x - p_dash);
+				p_z.fit_fun(ff, ud1, ud2);
+
+
+				if (p_z.y >= symp[max].y) {
+					for (int i = 0; i < n_; ++i)
+						if (i != min) {
+							symp[i].x = delta * (symp[i].x + symp[min].x);
+							symp[i].fit_fun(ff, ud1, ud2);
+						}
+				}
+
+				else
+					symp[max] = p_z;		// wykonaj zawezanie
+			}
+			double biggest = norm(symp[0].x - symp[min].x);
+
+			for (int i = 1; i < n_; ++i)
+				if (norm(symp[i].x - symp[min].x) >= biggest)
+					biggest = norm(symp[i].x - symp[min].x);
+				
+			if (biggest < epsilon)
+				return symp[min];
+
+			if (solution::f_calls > Nmax)
+				return symp[min];
+		}
 	}
-
 	catch (string ex_info)
 	{
 		throw ("solution pen(...):\n" + ex_info);
 	}
 }
 
-matrix get_simplex(int n) {
+solution pen(matrix(*ff)(matrix, matrix, matrix), matrix x0, double alpha, double beta, double gamma, double delta, double s,double c, double dc, double epsilon, int Nmax, matrix ud1, matrix ud2)
+{
+	try
+	{
+		solution X_bef(x0);
+		solution X(NAN);
+		matrix c(2, 1);
+		c(0, 0) = 2.0;
+		c(1, 0) = 1.0;
+		while (true)
+		{
+			X = sym_NM(ff, X_bef.x, s, alpha, beta, gamma, delta, epsilon, Nmax, ud1, c);
+			if (norm(X.x - X_bef.x) < epsilon)
+				return X;
+			if (solution::f_calls > Nmax)
+				return X;
+			c(0) = dc * c(0);
+			X_bef = X;
+		}
+	}
+	catch (string ex_info)
+	{
+		throw ("solution sym_NM(...):\n" + ex_info);
+	}
+}
+
+matrix get_simplex(int n, double s) {
 	matrix simplex(n, n + 1, 0.0);
 	for (int i = 0; i < n; i++) {
-		simplex(i, i + 1) = 1.0;
+		simplex(i, i + 1) = s* 1.0;
 	}
 	return simplex;
 }
@@ -1011,46 +1140,46 @@ solution golden(matrix(*ff)(matrix, matrix, matrix), double a, double b, double 
 	}
 }
 
-solution Newton(matrix(*ff)(matrix, matrix, matrix), matrix(*gf)(matrix, matrix, matrix),
-				matrix(*Hf)(matrix, matrix, matrix), matrix x0, double h0, double epsilon, int Nmax, matrix ud1, matrix ud2)
-			{
-				try
-				{
-					solution Xopt;
-					Xopt.ud = trans(x0);
-					int n = get_len(x0);
-					solution X0, X1(x0);
-					X0.x = x0;
-					matrix  P(n, 2);
-					soulution h, d;
-					double* ab;
-					while (true) {
-						d.x = -inv(X1.hess(Hf) * X0.grad(gf);
-						if (h0 < 0) {
-							P.set_col(X1.x, 0);
-							P.set_col(d.x, 1);
-							h = golden(ff, P, 1, epsilion, Nmax, ud1, 0).x;
-						}
-						else {
-							h = h0;
-							X0.x = X1.x;
-							X1.x = X1.x + d.x + h;
-							if (solution::f_calls > Nmax || solution::g_calls > Nmax || solution::H_calls > Nmax) {
-								Xq.flag = 0;
-								break;
-							}
-							if (norm(X1.x = X0.x) < epsilon)
-								break;
-						}
-						X1.fit_fun(ff);
-						return X1;
-					}
-				}
-				catch (string ex_info)
-				{
-					throw ("solution Newton(...):\n" + ex_info);
-				}
-			}
+//solution Newton(matrix(*ff)(matrix, matrix, matrix), matrix(*gf)(matrix, matrix, matrix),
+//				matrix(*Hf)(matrix, matrix, matrix), matrix x0, double h0, double epsilon, int Nmax, matrix ud1, matrix ud2)
+//			{
+//				try
+//				{
+//					solution Xopt;
+//					Xopt.ud = trans(x0);
+//					int n = get_len(x0);
+//					solution X0, X1(x0);
+//					X0.x = x0;
+//					matrix  P(n, 2);
+//					soulution h, d;
+//					double* ab;
+//					while (true) {
+//						d.x = -inv(X1.hess(Hf) * X0.grad(gf);
+//						if (h0 < 0) {
+//							P.set_col(X1.x, 0);
+//							P.set_col(d.x, 1);
+//							h = golden(ff, P, 1, epsilion, Nmax, ud1, 0).x;
+//						}
+//						else {
+//							h = h0;
+//							X0.x = X1.x;
+//							X1.x = X1.x + d.x + h;
+//							if (solution::f_calls > Nmax || solution::g_calls > Nmax || solution::H_calls > Nmax) {
+//								Xq.flag = 0;
+//								break;
+//							}
+//							if (norm(X1.x = X0.x) < epsilon)
+//								break;
+//						}
+//						X1.fit_fun(ff);
+//						return X1;
+//					}
+//				}
+//				catch (string ex_info)
+//				{
+//					throw ("solution Newton(...):\n" + ex_info);
+//				}
+//			}
 
 solution Powell(matrix(*ff)(matrix, matrix, matrix), matrix x0, double epsilon, int Nmax, matrix ud1, matrix ud2)
 {

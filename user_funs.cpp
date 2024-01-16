@@ -143,111 +143,123 @@ matrix ff3T_2(matrix x, matrix ud1, matrix ud2) {
 	return y;
 }
 
-matrix ff3T(matrix x, matrix ud1, matrix ud2) {
-	matrix y;
-	y = sin(M_PI * sqrt(pow(x(0, 0) / M_PI, 2) + pow(x(1, 0) / M_PI, 2)))
-		/ M_PI * sqrt(pow(x(0, 0) / M_PI, 2) + pow(x(1, 0) / M_PI, 2));
-	return y;
-}
+//matrix ff3T(matrix x, matrix ud1, matrix ud2) {
+//	matrix y;
+//	y = sin(M_PI * sqrt(pow(x(0, 0) / M_PI, 2) + pow(x(1, 0) / M_PI, 2)))
+//		/ M_PI * sqrt(pow(x(0, 0) / M_PI, 2) + pow(x(1, 0) / M_PI, 2));
+//	return y;
+//}
 
-double licz(double v0x, double omg) 
-{
-	double x = 0;
-	double vx = v0x;
-	double vy = 0;
-	double x_prev = 0;
-	double m = 0.6;	//kg = 600 g
-	double r = 0.12;	//m=12 cm
-	double y0 = 100;	//m
-	double S = M_PI * r * r;
-	double ro = 1.2;	//kg/m3
-	double C = 0.47;
-	double t0 = 0;
-	double dt = 0.01;
-	double tk = 7; 
-	double g = 9.89;
-	double y, ax, ay;
+//double licz(double v0x, double omg) 
+//{
+//	double x = 0;
+//	double vx = v0x;
+//	double vy = 0;
+//	double x_prev = 0;
+//	double m = 0.6;	//kg = 600 g
+//	double r = 0.12;	//m=12 cm
+//	double y0 = 100;	//m
+//	double S = M_PI * r * r;
+//	double ro = 1.2;	//kg/m3
+//	double C = 0.47;
+//	double t0 = 0;
+//	double dt = 0.01;
+//	double tk = 7; 
+//	double g = 9.89;
+//	double y, ax, ay;
+//
+//	while (abs(x - x_prev) >= 1e-6)
+//	{
+//		x += vx * dt;
+//		y = y0 - vy * dt;
+//		ax = (-0.5 * C * ro * S * vx * vx + ro * vy + omg* M_PI * r ^3) / m;
+//		ay = (-m * g - 0.5 * C * ro * S * vy * vy - ro * vx - omg* M_PI * r^3) / m;
+//		vx += ax * dt;
+//		vy += ay * dt;
+//		if (abs(x - x_prev) < 1e-6) {
+//			break;
+//		}
+//		x_prev = x;
+//	}
+//	return x;
+//
+//}
+//double znajdz()
+//{
+//	double max_xend = 0;
+//	double best_v0x = 0;
+//	double best_omega = 0;
+//	double xend;
+//
+//	for (int v0x = -10; v0x < 11; v0x++) {
+//		for (int omega = -23; omega < 24; omega++) {
+//			xend = licz(v0x, omega);
+//			if (4 <= xend <= 6 && abs(xend - 5) < abs(max_xend - 5)) {
+//				max_xend = xend;
+//				best_v0x = v0x;
+//				best_omega = omega;
+//				return max_xend, best_v0x, best_omega;
+//
+//				
+//			}
+//		}
+//	}
+//	return max_xend, best_v0x, best_omega;
+//}
 
-	while (abs(x - x_prev) >= 1e-6)
-	{
-		x += vx * dt;
-		y = y0 - vy * dt;
-		ax = (-0.5 * C * ro * S * vx * vx + ro * vy + omg* M_PI * r ^3) / m;
-		ay = (-m * g - 0.5 * C * ro * S * vy * vy - ro * vx - omg* M_PI * r^3) / m;
-		vx += ax * dt;
-		vy += ay * dt;
-		if (abs(x - x_prev) < 1e-6) {
-			break;
-		}
-		x_prev = x;
-	}
-	return x;
 
-}
-double znajdz()
-{
-	double max_xend = 0;
-	double best_v0x = 0;
-	double best_omega = 0;
-	double xend;
+//matrix ff3R(matrix x, matrix ud1, matrix ud2)
+//{
+//	double max_xend = 0;
+//	double best_v0x = 0;
+//	double best_omega = 0;
+//	max_xend, best_v0x, best_omega = znajdz();
+//
+//}
+//matrix g1(matrix x, matrix ud1, matrix ud2) {
+//	matrix y;
+//	y = (x(0, 0)) + 1;
+//	return y;
+//}
+//
+//matrix g2(matrix x, matrix ud1, matrix ud2) {
+//	matrix y;
+//	y = (x(1, 0)) + 1;
+//	return y;
+//}
+//
+//matrix g3(matrix x, matrix a, matrix ud1, matrix ud2) {
+//	matrix y;
+//	y = sqrt(pow(x(0, 0), 2) + pow(x(1, 0), 2)) - a;
+//	return y;
+//}
+//
+//matrix S(matrix x, matrix a, matrix ud1, matrix ud2) {
+//	matrix y;
+//	matrix ZERO(0.0);
+//	y = pow(max(ZERO, g1(x)), 2) +
+//		pow(max(ZERO, g2(x)), 2) +
+//		pow(max(ZERO, g3(x, a)), 2);
+//	return y;
+//}
 
-	for (int v0x = -10; v0x < 11; v0x++) {
-		for (int omega = -23; omega < 24; omega++) {
-			xend = licz(v0x, omega);
-			if (4 <= xend <= 6 && abs(xend - 5) < abs(max_xend - 5)) {
-				max_xend = xend;
-				best_v0x = v0x;
-				best_omega = omega;
-				return max_xend, best_v0x, best_omega;
-
-				
-			}
-		}
-	}
-	return max_xend, best_v0x, best_omega;
-}
-
-
-matrix ff3R(matrix x, matrix ud1, matrix ud2)
-{
-	double max_xend = 0;
-	double best_v0x = 0;
-	double best_omega = 0;
-	max_xend, best_v0x, best_omega = znajdz();
-
-}
-matrix g1(matrix x, matrix ud1, matrix ud2) {
-	matrix y;
-	y = (x(0, 0)) + 1;
-	return y;
-}
-
-matrix g2(matrix x, matrix ud1, matrix ud2) {
-	matrix y;
-	y = (x(1, 0)) + 1;
-	return y;
-}
-
-matrix g3(matrix x, matrix a, matrix ud1, matrix ud2) {
-	matrix y;
-	y = sqrt(pow(x(0, 0), 2) + pow(x(1, 0), 2)) - a;
-	return y;
-}
-
-matrix S(matrix x, matrix a, matrix ud1, matrix ud2) {
-	matrix y;
+matrix ff3T(matrix x, matrix ud1, matrix ud2) { // ud1: a, ud2: c [int 2, 2]
+	double Y = sin(M_PI * sqrt(pow(x(0) / M_PI, 2) + pow(x(1) / M_PI, 2))) 
+		/ (M_PI * sqrt(pow(x(0) / M_PI, 2) + pow(x(1) / M_PI, 2)));
+	matrix g1(-x(0) + 1.0);
+	matrix g2(-x(1) + 1.0);
+	matrix g3(norm(x) - ud1(0));
 	matrix ZERO(0.0);
-	y = pow(max(ZERO, g1(x)), 2) +
-		pow(max(ZERO, g2(x)), 2) +
-		pow(max(ZERO, g3(x, a)), 2);
-	return y;
-}
-
-matrix F_zewn(matrix x, matrix ud1, matrix ud2) { // ud1: c[i], ud2: a
-	matrix y;
-	y = ff3T(x) + ud1 * S(x, ud2);
-	//cout << "ud1:\n" << ud1 << "\n";
-	//cout << "ud2:\n" << ud2 << "\n";
+	matrix y(Y);
+	if (-x(0) + 1 > 0) {
+		y = y + ud2(0) * pow(max(ZERO, g1), 2);
+	}
+	if (-x(1) + 1 > 0) {
+		y = y + ud2(0) * pow(max(ZERO, g2), 2);
+	}
+	if (norm(x) - ud1(0) > 0) {
+		y = y + ud2(0) * pow(max(ZERO, g3), 2);
+	}
 	return y;
 }
 

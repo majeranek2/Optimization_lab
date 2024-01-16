@@ -22,7 +22,7 @@ int main()
 {
 	try
 	{
-		lab4();
+		lab3();
 	}
 	catch (string EX_INFO)
 	{
@@ -286,65 +286,59 @@ void lab3()
 	double epsilon = 0.0001;
 	int Nmax = 100;
 	matrix a(5.0);
-	double alpha_pen = 2.0;
+	matrix x0(2, 1);
+	x0(0, 0) = 1.5;  
+	x0(1, 0) = 0.5;
+	int c = 2;
+	int dc = 2;
 
-	//matrix x0 = get_simplex(2);
-	double** tab = new double* [2]{	// przydatne gdyby chcieæ zacz¹æ z innego simpleksu
-		/* new double[3]{4.0, 5.0, 3.0},
-		 new double[3]{2.0, 5.0, 5.0}*/
-		 new double[3]{2.0, 4.0, 3.0},
-		 new double[3]{2.0, 3.0, 4.0}
-	};
-	matrix x0(2, 3, tab);
-
-	//optT = sym_NM(ff3T_2, x0, s, alpha, beta, gamma, delta, epsilon, Nmax, ud1, ud2);
-	optT = pen(F_zewn, x0, a, alpha_pen, s, alpha, beta, gamma, delta, epsilon, Nmax, ud1, ud2);
+	optT = pen(ff3T, x0, alpha, beta, gamma, delta, s, c, dc, epsilon, Nmax, a);
 	cout << optT << endl;
 	solution::clear_calls();
 }
 
-void lab4()
-{
-		srand(time(NULL));
-		int Nmax = 100;
-		matrix ud1, ud2;
-		double epsilon = 0.01;
-		solution optT;
-		matrix x0(2, 1);
-		x0(0, 0) = -10.0 + 2.0 * static_cast <double> (rand()) / static_cast <double> (RAND_MAX);
-		x0(1, 0) = -10.0 + 2.0 * static_cast <double> (rand()) / static_cast <double> (RAND_MAX);;
-		double a = -10;
-		double b = 10;
-		//optT = golden(ff4T,a,b, epsilon, Nmax, ud1, ud2);
-		double h = 0.05;
-		ofstream Sout("wyniki_teoretyczny_lab4_dla_0.05.csv");
-		for (int i = 0; i < 100; i++) {
-			x0(0, 0) = -10.0 + 2.0 * static_cast <double> (rand()) / static_cast <double> (RAND_MAX);
-			x0(1, 0) = -10.0 + 2.0 * static_cast <double> (rand()) / static_cast <double> (RAND_MAX);;
+//void lab4()
+//{
+		//srand(time(NULL));
+		//int Nmax = 100;
+		//matrix ud1, ud2;
+		//double epsilon = 0.01;
+		//solution optT;
+		//matrix x0(2, 1);
+		//x0(0, 0) = -10.0 + 2.0 * static_cast <double> (rand()) / static_cast <double> (RAND_MAX);
+		//x0(1, 0) = -10.0 + 2.0 * static_cast <double> (rand()) / static_cast <double> (RAND_MAX);;
+		//double a = -10;
+		//double b = 10;
+		////optT = golden(ff4T,a,b, epsilon, Nmax, ud1, ud2);
+		//double h = 0.05;
+		//ofstream Sout("wyniki_teoretyczny_lab4_dla_0.05.csv");
+		//for (int i = 0; i < 100; i++) {
+		//	x0(0, 0) = -10.0 + 2.0 * static_cast <double> (rand()) / static_cast <double> (RAND_MAX);
+		//	x0(1, 0) = -10.0 + 2.0 * static_cast <double> (rand()) / static_cast <double> (RAND_MAX);;
 
-			optT = SD_1(ff4T, gf4, x0, h, epsilon, Nmax);
-			Sout << hcat(optT.x(0), optT.x(1));
-			Sout << hcat(optT.y, optT.f_calls);
-			Sout << "\n";
-			solution::clear_calls();
+		//	optT = SD_1(ff4T, gf4, x0, h, epsilon, Nmax);
+		//	Sout << hcat(optT.x(0), optT.x(1));
+		//	Sout << hcat(optT.y, optT.f_calls);
+		//	Sout << "\n";
+		//	solution::clear_calls();
 
-			optT = SD_2(ff4T, gf4, x0, h, epsilon, Nmax);
-			Sout << hcat(optT.x(0), optT.x(1));
-			Sout << hcat(optT.y, optT.f_calls);
-			Sout << "\n";
-			solution::clear_calls();
+		//	optT = SD_2(ff4T, gf4, x0, h, epsilon, Nmax);
+		//	Sout << hcat(optT.x(0), optT.x(1));
+		//	Sout << hcat(optT.y, optT.f_calls);
+		//	Sout << "\n";
+		//	solution::clear_calls();
 
-			optT = CG_1(ff4T, gf4, x0, h, epsilon, Nmax);
-			Sout << hcat(optT.x(0), optT.x(1));
-			Sout << hcat(optT.y, optT.f_calls);
-			Sout << "\n";
-			solution::clear_calls();
+		//	optT = CG_1(ff4T, gf4, x0, h, epsilon, Nmax);
+		//	Sout << hcat(optT.x(0), optT.x(1));
+		//	Sout << hcat(optT.y, optT.f_calls);
+		//	Sout << "\n";
+		//	solution::clear_calls();
 
-			optT = CG_2(ff4T, gf4, x0, h, epsilon, Nmax);
-			Sout << hcat(optT.x(0), optT.x(1));
-			Sout << hcat(optT.y, optT.f_calls);
-			Sout << "\n";
-			solution::clear_calls();
+		//	optT = CG_2(ff4T, gf4, x0, h, epsilon, Nmax);
+		//	Sout << hcat(optT.x(0), optT.x(1));
+		//	Sout << hcat(optT.y, optT.f_calls);
+		//	Sout << "\n";
+		//	solution::clear_calls();
 
 			/*optT = Newton_1(ff4T, gf4,hf4,x0,h, epsilon,Nmax,ud1,ud2);
 			Sout << hcat(optT.x(0), optT.x(1));
@@ -357,9 +351,9 @@ void lab4()
 			Sout << hcat(optT.y, optT.f_calls);
 			Sout << "\n";
 			solution::clear_calls();*/
-		}
+		//}
 
-		double h = 0.12;
+		/*double h = 0.12;
 		ofstream Sout("wyniki_teoretyczny_lab4_dla_0.12.csv");
 		for (int i = 0; i < 100; i++) {
 			x0(0, 0) = -10.0 + 2.0 * static_cast <double> (rand()) / static_cast <double> (RAND_MAX);
@@ -387,7 +381,7 @@ void lab4()
 			Sout << hcat(optT.x(0), optT.x(1));
 			Sout << hcat(optT.y, optT.f_calls);
 			Sout << "\n";
-			solution::clear_calls();
+			solution::clear_calls();*/
 
 			/*optT = Newton_1(ff4T, gf4,hf4,x0,h, epsilon,Nmax,ud1,ud2);
 			Sout << hcat(optT.x(0), optT.x(1));
@@ -400,14 +394,14 @@ void lab4()
 			Sout << hcat(optT.y, optT.f_calls);
 			Sout << "\n";
 			solution::clear_calls();*/
-		}
+		//}
 
 
 		//	optT = golden(ff4T, a, b, epsilon, Nmax, ud1, ud2);
 			//cout << optT<< endl;
 			//solution::clear_calls();
 	
-}
+//}
 
 void lab5()
 {
