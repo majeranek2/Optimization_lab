@@ -283,16 +283,40 @@ void lab3()
 	double beta = 0.5;
 	double gamma = 2.0;
 	double delta = 0.5;
-	double epsilon = 0.0001;
+	double epsilon = 0.00001;
 	int Nmax = 100;
-	matrix a(5.0);
+	matrix a = 4.0;
 	matrix x0(2, 1);
-	x0(0, 0) = 1.5;  
+	x0(0, 0) = 1.5;
 	x0(1, 0) = 0.5;
 	int c = 2;
 	int dc = 2;
 
-	optT = pen(ff3T, x0, alpha, beta, gamma, delta, s, c, dc, epsilon, Nmax, a);
+	//optT = pen(ff3T, x0, alpha, beta, gamma, delta, s, c, dc, epsilon, Nmax, a);
+	//cout << optT << endl;
+	ofstream Sout3T("lab3T_100optymalizacji_a5.csv");
+
+	for (int i = 0; i < 100; i++) {		// 100 losowych punktow spelniajacych ograniczenia g1, g2, g3
+		do {
+			double one = (((double)rand() / RAND_MAX) * m2d(a));
+			double two = (((double)rand() / RAND_MAX) * m2d(a));
+			x0.set_row(one, 0);
+			x0.set_row(two, 1);
+			//cout << i << ". " <<endl << endl << x0 << endl <<norm(x0) << endl;
+		} while (norm(x0) < a);
+		solution::clear_calls();
+		Sout3T << hcat(x0(0, 0), x0(1, 0));
+		optT = pen(ff3T, x0, alpha, beta, gamma, delta, s, c, dc, epsilon, Nmax, a);
+		matrix distance = norm(x0);
+		matrix x_temp = optT.x;
+		Sout3T << hcat(x_temp(0, 0), x_temp(1, 0));
+		Sout3T << hcat(distance, optT.y);
+		Sout3T << hcat(optT.f_calls, NAN);
+		Sout3T << "\n";
+	}
+
+
+	optT = pen(ff3R, x0, alpha, beta, gamma, delta, s, c, dc, epsilon, Nmax, a);
 	cout << optT << endl;
 	solution::clear_calls();
 }
