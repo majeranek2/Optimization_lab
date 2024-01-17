@@ -765,7 +765,7 @@ solution pen(matrix(*ff)(matrix, matrix, matrix), matrix x0, double alpha, doubl
 		solution X_bef(x0);
 		solution X(NAN);
 		matrix c(2, 1);
-		c(0, 0) = 2.0;
+		c(0, 0) = 2.0;	
 		c(1, 0) = 1.0;
 		while (true)
 		{
