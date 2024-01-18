@@ -225,7 +225,7 @@ matrix ff3R(matrix x, matrix ud1, matrix ud2)
 }
 
 
-matrix ff3T(matrix x, matrix ud1, matrix ud2) { // ud1: a, ud2: c [int 2, 2]
+matrix ff3T_zewn(matrix x, matrix ud1, matrix ud2) { // ud1: a, ud2: c 
 	double Y = sin(M_PI * sqrt(pow(x(0) / M_PI, 2) + pow(x(1) / M_PI, 2))) 
 		/ (M_PI * sqrt(pow(x(0) / M_PI, 2) + pow(x(1) / M_PI, 2)));
 	matrix g1(-x(0) + 1.0);
@@ -233,6 +233,7 @@ matrix ff3T(matrix x, matrix ud1, matrix ud2) { // ud1: a, ud2: c [int 2, 2]
 	matrix g3(norm(x) - ud1(0));
 	matrix ZERO(0.0);
 	matrix y(Y);
+	// KARA ZEWNĘTRZNA
 	if (-x(0) + 1 > 0) {
 		y = y + ud2(0) * pow(max(ZERO, g1), 2);
 	}
@@ -245,10 +246,33 @@ matrix ff3T(matrix x, matrix ud1, matrix ud2) { // ud1: a, ud2: c [int 2, 2]
 	return y;
 }
 
+matrix ff3T_wewn(matrix x, matrix ud1, matrix ud2) { // ud1: a, ud2: c 
+	double Y = sin(M_PI * sqrt(pow(x(0) / M_PI, 2) + pow(x(1) / M_PI, 2)))
+		/ (M_PI * sqrt(pow(x(0) / M_PI, 2) + pow(x(1) / M_PI, 2)));
+	matrix g1(-x(0) + 1.0);
+	matrix g2(-x(1) + 1.0);
+	matrix g3(norm(x) - ud1(0));
+	matrix ZERO(0.0);
+	matrix y(Y);
+	// WEWNĘTRZNA
+	if (-x(0) + 1 > 0) {
+		y = y - ud2(0) / g1;
+	}
+	if (-x(1) + 1 > 0) {
+		y = y - ud2(0) / g2;
+	}
+	if (norm(x) - ud1(0) > 0) {
+		y = y - ud2(0) / g3;
+	}
+	return y;
+}
+
 //lab 4
-matrix ff4T(matrix x, matrix ud1, matrix ud2) {
-	matrix y;
-	y = pow((x(0) + 2 * x(1) - 7), 2) + pow((2 * x(0) + x(1) - 5), 2);
+matrix ff3T(matrix x, matrix ud1, matrix ud2) {
+	//y = pow((x(0) + 2 * x(1) - 7), 2) + pow((2 * x(0) + x(1) - 5), 2);
+	double Y = sin(M_PI * sqrt(pow(x(0) / M_PI, 2) + pow(x(1) / M_PI, 2)))
+		/ (M_PI * sqrt(pow(x(0) / M_PI, 2) + pow(x(1) / M_PI, 2)));
+	matrix y(Y);
 	return y;
 }
 
