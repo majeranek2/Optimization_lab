@@ -277,7 +277,7 @@ void lab1()
 void lab3()
 {
 	matrix ud1, ud2;
-	solution optT;
+	solution optT, optT_;
 	double s = 1.0;
 	double alpha = 1.0;
 	double beta = 0.5;
@@ -287,14 +287,12 @@ void lab3()
 	int Nmax = 100;
 	matrix a = 5.0;
 	matrix x0(2, 1);
-	x0(0, 0) = 1.5;
-	x0(1, 0) = 0.5;
+	//x0(0, 0) = 1.5;
+	//x0(1, 0) = 0.5;
 	double c = 2;
 	double dc = 2.0;
 
-	//optT = pen(ff3T, x0, alpha, beta, gamma, delta, s, c, dc, epsilon, Nmax, a);
-	//cout << optT << endl;
-	ofstream Sout3T("lab3T_100optymalizacji.csv");
+	ofstream Sout3T("lab3T.csv");
 
 	for (int i = 0; i < 100; i++) {		// 100 losowych punktow spelniajacych ograniczenia g1, g2, g3
 		do {
@@ -302,8 +300,8 @@ void lab3()
 			double two = (((double)rand() / RAND_MAX) * m2d(a));
 			x0.set_row(one, 0);
 			x0.set_row(two, 1);
-			//cout << i << ". " <<endl << endl << x0 << endl <<norm(x0) << endl;
 		} while (norm(x0) < a);
+
 		solution::clear_calls();
 		dc = 2.0;
 		// zewnetrzna
@@ -317,13 +315,13 @@ void lab3()
 		solution::clear_calls();
 		dc = 0.5;
 		// wewnetrzna
-		optT = pen(ff3T_wewn, x0, alpha, beta, gamma, delta, s, c, dc, epsilon, Nmax, a);
-		matrix result = ff4T(optT.x);
-		x_temp = optT.x;
+		optT_ = pen(ff3T_wewn, x0, alpha, beta, gamma, delta, s, c, dc, epsilon, Nmax, a);
+		matrix result = ff3T(optT_.x);
+		x_temp = optT_.x;
 		Sout3T << hcat(x_temp(0, 0), x_temp(1, 0));
-		distance = norm(optT.x);
+		distance = norm(optT_.x);
 		Sout3T << hcat(distance, result);
-		Sout3T << hcat(optT.f_calls, NAN);
+		Sout3T << hcat(optT_.f_calls, NAN);
 		Sout3T << "\n";
 	}
 

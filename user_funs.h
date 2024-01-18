@@ -27,7 +27,7 @@ matrix g2(matrix x, matrix ud1 = NAN, matrix ud2 = NAN);
 matrix g3(matrix x, matrix a, matrix ud1 = NAN, matrix ud2 = NAN);
 matrix S(matrix x, matrix a, matrix ud1 = NAN, matrix ud2 = NAN);
 matrix F_zewn(matrix x, matrix ud1 = NAN, matrix ud2 = NAN);
-matrix ff3R(matrix x, matrix ud1, matrix ud2);
+matrix ff3T(matrix x, matrix ud1 = NAN, matrix ud2 = NAN);
 matrix znajdz();
 matrix licz(double v0x, double omg);
 

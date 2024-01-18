@@ -268,7 +268,7 @@ matrix ff3T_wewn(matrix x, matrix ud1, matrix ud2) { // ud1: a, ud2: c
 }
 
 //lab 4
-matrix ff4T(matrix x, matrix ud1, matrix ud2) {
+matrix ff3T(matrix x, matrix ud1, matrix ud2) {
 	//y = pow((x(0) + 2 * x(1) - 7), 2) + pow((2 * x(0) + x(1) - 5), 2);
 	double Y = sin(M_PI * sqrt(pow(x(0) / M_PI, 2) + pow(x(1) / M_PI, 2)))
 		/ (M_PI * sqrt(pow(x(0) / M_PI, 2) + pow(x(1) / M_PI, 2)));
